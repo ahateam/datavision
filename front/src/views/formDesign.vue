@@ -43,11 +43,12 @@
                                             <td>
                                                 {{dataTypeFilter(item.dataType)}}
                                             </td>
-                                            <td>{{item.formula}}</td>
+                                            <td>{{item.computeFormula}}</td>
 
                                             <td>
                                                 <el-button type="primary" size="mini" @click="checkDataBtn(index)">编辑</el-button>
                                                 <el-button type="danger" size="mini" @click="delDataBtn(index)" style="margin-left: 20px">删除</el-button>
+                                                <el-button type="primary" size="mini" @click="formulaBtn(index)">测试计算</el-button>
                                             </td>
                                         </tr>
                                     </tbody>
@@ -243,6 +244,8 @@
 </template>
 
 <script>
+
+
     export default {
         name: "formDesign",
         data() {
@@ -293,6 +296,15 @@
             }
         },
         methods: {
+
+            /**测试计算公式*/
+            formulaBtn(_index){
+                let item ={pop:300,sum:10000,pp:100,time:'3季度',money:'222'}
+                console.log(this.$commen)
+                let res = this.$commen.getFormulaResult(item,this.tableData[_index].computeFormula)
+                console.log(res)
+            },
+
             /** 重置变量值*/
             resetData(){
                 let obj = {
@@ -510,13 +522,14 @@
 
         },
         mounted() {
+
             this.menuForm.height = this.$refs.menuBox.offsetHeight - 30 + 'px'
             this.tableData=[
-                { name: 'time', alias: '季度', necessary:'0', columnType: 'data', dataType: 'string', remark:'', formula:'', dataProp: {length: '20', decimals: '', intRules: '', start: '', end: '', dataUnit:''}},
-                {name: 'pop', alias: '单价', necessary:'0', columnType: 'data', dataType: 'decimal', remark:'', formula:'', dataProp: {length: '', decimals: '2', intRules: '', start: '', end: '', dataUnit:''}},
-                {name: 'sum', alias: '销售量', necessary:'0', columnType: 'data', dataType: 'int', remark:'', formula:'', dataProp: {length: '5', decimals: '', intRules: '', start: '', end: '', dataUnit:''}},
-                {name: 'pp', alias: '成本', necessary:'0', columnType: 'data', dataType: 'decimal', remark:'', formula:'', dataProp: {length: '', decimals: '2', intRules: '', start: '', end: '', dataUnit:''}},
-
+                { name: 'time', alias: '季度', necessary:'0', columnType: 'data', dataType: 'string', remark:'', computeFormula:'', dataProp: {length: '20', decimals: '', intRules: '', start: '', end: '', dataUnit:''}},
+                {name: 'pop', alias: '单价', necessary:'0', columnType: 'data', dataType: 'decimal', remark:'', computeFormula:'', dataProp: {length: '', decimals: '2', intRules: '', start: '', end: '', dataUnit:''}},
+                {name: 'sum', alias: '销售量', necessary:'0', columnType: 'data', dataType: 'int', remark:'', computeFormula:'', dataProp: {length: '5', decimals: '', intRules: '', start: '', end: '', dataUnit:''}},
+                {name: 'pp', alias: '成本', necessary:'0', columnType: 'data', dataType: 'decimal', remark:'', computeFormula:'', dataProp: {length: '', decimals: '2', intRules: '', start: '', end: '', dataUnit:''}},
+                {name:'money',alias:'利润',necessary:'0',columnType:'compute', dataType: 'decimal', remark:'', computeFormula:'({{pop}}-{{pp}})*{{sum}}', dataProp: {length: '', decimals: '2', intRules: '', start: '', end: '', dataUnit:''}}
             ]
         }
     }
