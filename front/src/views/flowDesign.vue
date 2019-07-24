@@ -9,12 +9,11 @@
 				</el-aside>
 				<el-container>
 					<el-main class="main-box">
-
-						<flow-editor></flow-editor>
+						<div class="center-box">
+							<flow-editor></flow-editor>
+						</div>
 
 						<div class="info-box">
-
-
 
 						</div>
 
@@ -30,10 +29,9 @@
 </template>
 
 <script>
-	import G6 from '@antv/g6';
 
-	import FlowEditor from '../components/FlowEditor.vue'
 
+	import FlowEditor from '@/components/FlowEditor'
 	export default {
 		name: "flowDesign",
 		components: {

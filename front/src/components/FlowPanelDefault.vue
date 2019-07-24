@@ -59,12 +59,6 @@
 		font-size: 16px;
 		color: #666;
 		padding: 10px 0;
-		cursor: pointer;
-		border-bottom: 1px solid #e8e8e8;
-		transition: all .8s;
-	}
-
-	.tab-item-content {
 		width: auto;
 		height: 300px;
 		overflow-y: auto;
@@ -73,6 +67,12 @@
 	.search-box {
 		width: auto;
 		height: 50px;
+		cursor: pointer;
+		border-bottom: 1px solid #e8e8e8;
+		transition: all .8s;
+	}
+
+	.tab-item-content {
 		line-height: 50px;
 
 	}

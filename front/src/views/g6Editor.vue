@@ -4,9 +4,8 @@
 			<el-header class="header-box">Header</el-header>
 			<el-container style="height: 100%;">
 				<el-aside width="200px" class="item-box">
-					<div class="nav-box" v-for="(item,index) in itemListL" :key="index" @click="checkItem(index)">
-						<img draggable="false" :src="item.src" class="getItem" :label="item.label">
-					</div>
+
+
 
 					<div class=" nav-box">
 						<el-button type="primary" size="small" @click="saveBtn"> 提交数据</el-button>
@@ -17,7 +16,7 @@
 						<div class="center-box">
 							<div id="canvasBox" ref="canvasBox"></div>
 						</div>
-						
+
 						<div class="info-box">
 
 							<div class="tab-box">
@@ -101,13 +100,10 @@
 <script>
 	import G6 from '@antv/g6';
 
-	import FlowEditor from '../components/FlowEditor.vue'
+
 
 	export default {
 		name: "g6Editor",
-		components: {
-			FlowEditor,
-		},
 		data() {
 			return {
 				itemListL: [{

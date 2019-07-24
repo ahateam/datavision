@@ -507,7 +507,6 @@
             resetCompute(){
                 this.formulaData = ''
                 this.computeList = []
-
                 for(let i =0;i<this.tableData.length;i++){
                     if(this.tableData[i].dataType == 'int' || this.tableData[i].dataType == 'decimal' || this.tableData[i].dataType == 'money'){
                         let obj = JSON.parse(JSON.stringify(this.tableData[i]))

@@ -7,6 +7,7 @@ const test1 =()=> import('./views/test1')
 const formDesign =()=>import('./views/formDesign')
 const flowDesign =()=>import('./views/flowDesign')
 
+
 const g6Editor =()=>import('./views/g6Editor')
 
 
@@ -26,10 +27,10 @@ export default new Router({
             name:'formDesign',
             component:formDesign
         },
-		 {
-		    path:'/flowDesign',
-		    name:'flowDesign',
-		    component:flowDesign
+        {
+            path:'/flowDesign',
+            name:'flowDesign',
+            component:flowDesign
 		},
         {
             path:'/g6Editor',
