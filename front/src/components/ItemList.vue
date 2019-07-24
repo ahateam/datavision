@@ -94,7 +94,6 @@
             checkItem(_index){
                 this.itemList[_index].model.id = G6.Util.uniqueId()
                 let model = JSON.parse(JSON.stringify(this.itemList[_index].model))
-                console.log(  this.$store.state.flowData.graph)
                 this.$store.state.flowData.graph.addItem('node', model)
             }
         },
@@ -104,6 +103,10 @@
     }
 </script>
 
-<style scoped>
-
+<style scoped lang="scss">
+    .nav-box {
+        margin-top: 20px;
+        text-align: center;
+        width: auto;
+    }
 </style>
