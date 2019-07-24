@@ -13,15 +13,16 @@
 				nodeData: {
 					nodes: [{
 						id: 'node1',
-						label: 'node1',
 						x: 100,
 						y: 200,
-						anchorPoints: [
-							[0, 1],
-							[0.5, 1]
-						],
-						shape: 'rect'
-					}, ],
+						size: 60,
+						label: '起止节点',
+						shape: 'circle',
+						style: {
+							stroke: '#ffc069',
+							fill: '#fff3ea'
+						}
+					}],
 					edges: []
 				},
 			}

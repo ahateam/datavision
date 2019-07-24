@@ -48,11 +48,10 @@
                             size: [70, 40],
                             label: '常规节点',
                             shape: 'rect',
-
                             style: {
                                 stroke: '#1890ff',
                                 fill: '#e8f8ff',
-                                radius: 5
+                                radius: 5,
                             }
                         }
                     },
@@ -83,7 +82,7 @@
                             style: {
                                 stroke: '#b37feb',
                                 fill: '#f9f1ff',
-                                radius: 5
+                                radius: 18
                             }
                         }
                     },
