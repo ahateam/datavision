@@ -5,7 +5,9 @@
 			<el-container style="height: 100%;">
 				<el-aside width="200px" class="item-box">
 
-
+					<div class="nav-box" v-for="(item,index) in itemListL" :key="index" @click="checkItem(index)">
+						<img draggable="false" :src="item.src" class="getItem" :label="item.label">
+					</div>
 
 					<div class=" nav-box">
 						<el-button type="primary" size="small" @click="saveBtn"> 提交数据</el-button>

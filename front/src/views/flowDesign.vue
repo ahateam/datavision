@@ -4,8 +4,7 @@
 			<el-header class="header-box">Header</el-header>
 			<el-container style="height: 100%;">
 				<el-aside width="200px" class="item-box">
-
-
+					<item-list></item-list>
 				</el-aside>
 				<el-container>
 					<el-main class="main-box">
@@ -32,10 +31,13 @@
 
 
 	import FlowEditor from '@/components/FlowEditor'
+	import ItemList from  '@/components/ItemList'
+
 	export default {
 		name: "flowDesign",
 		components: {
 			FlowEditor,
+			ItemList
 		},
 		data() {
 			return {
