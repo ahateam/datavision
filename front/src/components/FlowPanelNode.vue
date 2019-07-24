@@ -1,7 +1,6 @@
 <template>
 	<div>
 
-		<div class="tab-box">
 
 			<!-- 面板左侧导航菜单 -->
 			<div class="tab-title">
@@ -30,7 +29,7 @@
 			</div>
 		</div>
 
-	</div>
+
 </template>
 
 <script>

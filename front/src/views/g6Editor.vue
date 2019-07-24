@@ -74,6 +74,7 @@
 
 								</div>
 							</div>
+
 							<div class="show-box">
 								<el-form ref="form" label-width="80px">
 									<el-form-item label="修改值">

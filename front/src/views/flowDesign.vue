@@ -13,7 +13,10 @@
 						</div>
 
 						<div class="info-box">
+							<div class="tab-box">
+
 							<flow-panel-node></flow-panel-node>
+							</div>
 
 							<div class="show-box">
 								<flow-panel-node-value></flow-panel-node-value>
@@ -108,8 +111,10 @@
 	.show-box {
 		width: 100%;
 		height: 200px;
+		background: #fff;
 		border-top: 1px solid #e8e8e8;
 		padding: 10px 0;
+
 	}
 
 	/** 右侧tab样式*/
