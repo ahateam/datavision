@@ -10,7 +10,7 @@ export default new Vuex.Store({
         /*选中节点*/
         graphActive:{
           graphId:'',
-          graphLable:'',
+          graphLabel:'',
           graphType:'',
         }
       }

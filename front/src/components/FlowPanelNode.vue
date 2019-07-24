@@ -24,8 +24,7 @@
 				</div>
 				<!--行为配置-->
 				<div v-if="tabActive ==2">
-					进行规则配置 展示所有节点 选择下一节点跳转
-
+					<flow-panel-node-action></flow-panel-node-action>
 				</div>
 
 			</div>
@@ -35,9 +34,9 @@
 </template>
 
 <script>
-	import FlowPanelNodeRes from './FlowPanelNodeRes'
-	import FlowPanelNodeAuth from './FlowPanelNodeAuth'
-	// import FlowPanelNodeAction from '../components/FlowPanelNodeAction.vue'
+	import FlowPanelNodeRes from './flowPanelNodeChilds/FlowPanelNodeRes'
+	import FlowPanelNodeAuth from './flowPanelNodeChilds/FlowPanelNodeAuth'
+	import FlowPanelNodeAction from './flowPanelNodeChilds/FlowPanelNodeAction'
 
 	export default {
 		name: "FlowNodePanel",
@@ -233,7 +232,7 @@
 		components: {
 			FlowPanelNodeRes,
 			FlowPanelNodeAuth,
-			// FlowPanelNodeAction,
+			FlowPanelNodeAction,
 		},
 		methods: {
 			onTabItemChange(index) {

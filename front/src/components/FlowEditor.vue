@@ -186,7 +186,7 @@
 					}
 					// 置点击的节点状态为active
 					_this.$store.state.flowData.graphActive.graphId = item._cfg.id;
-					_this.$store.state.flowData.graphActive.graphLable = item._cfg.model.label;
+					_this.$store.state.flowData.graphActive.graphLabel = item._cfg.model.label;
 					_this.$store.state.flowData.graphActive.graphType = item._cfg.type;
 					graph.setItemState(item, 'active', true);
 				},
@@ -200,7 +200,7 @@
 				},
 				removeNodesState() {
 					_this.$store.state.flowData.graphActive.graphId = '';
-					_this.$store.state.flowData.graphActive.graphLable = '';
+					_this.$store.state.flowData.graphActive.graphLabel = '';
 					_this.$store.state.flowData.graphActive.graphType = '';
 					_this.$store.state.flowData.graph.findAllByState('active').forEach(node => {
 						_this.$store.state.flowData.graph.setItemState(node, 'active', false);

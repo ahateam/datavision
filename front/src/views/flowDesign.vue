@@ -14,7 +14,12 @@
 
 						<div class="info-box">
 							<flow-panel-node></flow-panel-node>
+
+							<div class="show-box">
+								<flow-panel-node-value></flow-panel-node-value>
+							</div>
 						</div>
+
 
 					</el-main>
 					<el-footer class="footer">
@@ -33,12 +38,14 @@
 	import FlowEditor from '@/components/FlowEditor'
 	import ItemList from  '@/components/ItemList'
 	import FlowPanelNode from '@/components/FlowPanelNode'
+	import FlowPanelNodeValue from '@/components/FlowPanelNodeValue'
 	export default {
 		name: "flowDesign",
 		components: {
 			FlowEditor,
 			ItemList,
-			FlowPanelNode
+			FlowPanelNode,
+			FlowPanelNodeValue
 		},
 		data() {
 			return {
