@@ -11,18 +11,7 @@
 		data(){
 			return{
 				nodeData: {
-					nodes: [{
-						id: 'node1',
-						x: 100,
-						y: 200,
-						size: 60,
-						label: '起止节点',
-						shape: 'circle',
-						style: {
-							stroke: '#ffc069',
-							fill: '#fff3ea'
-						}
-					}],
+					nodes: [],
 					edges: []
 				},
 			}
@@ -227,7 +216,7 @@
 						endArrow: true
 					}
 				},
-			});
+			})
 
 			graph.data(this.nodeData)
 			graph.render()

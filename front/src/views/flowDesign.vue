@@ -3,8 +3,9 @@
 		<el-container style="height: 100%">
 			<el-header class="header-box">Header</el-header>
 			<el-container style="height: 100%;">
-				<el-aside width="200px" class="item-box">
-					<item-list></item-list>
+				<el-aside width="200px" class="item-box"
+						  v-if="flowId!=''">
+                    <node-list :flowId="flowId"></node-list>
 				</el-aside>
 				<el-container>
 					<el-main class="main-box">
@@ -36,29 +37,30 @@
 </template>
 
 <script>
-
-
 	import FlowEditor from '@/components/FlowEditor'
-	import ItemList from  '@/components/ItemList'
 	import FlowPanelNode from '@/components/FlowPanelNode'
 	import FlowPanelNodeValue from '@/components/FlowPanelNodeValue'
+    import NodeList from '@/components/NodeList'
 	export default {
 		name: "flowDesign",
 		components: {
 			FlowEditor,
-			ItemList,
 			FlowPanelNode,
-			FlowPanelNodeValue
+			FlowPanelNodeValue,
+            NodeList
 		},
 		data() {
 			return {
-
+				flowId:''
 			}
 		},
 		methods: {
 
 		},
-		mounted() {}
+		mounted() {
+			this.flowId =  this.$store.state.flowId
+			console.log(this.flowId)
+		}
 	}
 </script>
 

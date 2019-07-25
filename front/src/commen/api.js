@@ -8,10 +8,14 @@ import baseUrl from './url'
 let api = {};
 console.log('开始调用ctrl');
 
-//创建表结构
-api.createTableSchema= function (cnt,callback) {
-    util.call(baseUrl+'/flow/createTableSchema', cnt, callback)
+//获取流程图列表
+api.getProcessDefinition= function (cnt,callback) {
+    util.call(baseUrl+'/flow/getProcessDefinition', cnt, callback)
 }
 
+//新增节点
+api.createProcessActivity= function (cnt,callback) {
+    util.call(baseUrl+'/flow/createProcessActivity', cnt, callback)
+}
 export default api
 

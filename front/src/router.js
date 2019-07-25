@@ -2,14 +2,16 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import home from './views/home'
 
+/** 业务组件页面*/
 const test = () => import('./views/test')
 const test1 =()=> import('./views/test1')
 const formDesign =()=>import('./views/formDesign')
 const flowDesign =()=>import('./views/flowDesign')
-
-
 const g6Editor =()=>import('./views/g6Editor')
 
+/** page页面*/
+const pageHome =()=>import('./views/page/home/pageHome')
+const processList =()=> import('./views/page/process/processList')
 
 Vue.use(Router)
 
@@ -46,6 +48,21 @@ export default new Router({
             path:'/test1',
             name:'test1',
             component:test1
-        }
+        },
+
+        /** 页面*/
+        {
+            path:'/pageHome',
+            name:'pageHome',
+            component:pageHome,
+            children:[
+                {
+                    path:'/processList',
+                    name:'processList',
+                    component:processList
+                }
+            ]
+        },
+
     ]
 })
