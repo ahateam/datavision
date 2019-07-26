@@ -8,6 +8,10 @@
 	import G6 from '@antv/g6';
 	export default {
 		name: "FlowEditor",
+		props:{
+            flowId:Number,
+			nodeList:Array
+		},
 		data(){
 			return{
 				nodeData: {
@@ -217,6 +221,20 @@
 					}
 				},
 			})
+
+
+
+
+			let cnt = {
+                pdId: this.flowId, // Long DefinitionId 流程定义编号
+                count: 500, // Integer
+                offset: 0, // Integer
+			}
+
+			this.nodeData.nodes = this.$store.state.nodeList
+			console.log('111111')
+			console.log(this.nodeList)
+			console.log(this.nodeData)
 
 			graph.data(this.nodeData)
 			graph.render()

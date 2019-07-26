@@ -8,7 +8,7 @@ const test1 =()=> import('./views/test1')
 const formDesign =()=>import('./views/formDesign')
 const flowDesign =()=>import('./views/flowDesign')
 const g6Editor =()=>import('./views/g6Editor')
-
+const page =()=>import('./views/page')
 /** page页面*/
 const pageHome =()=>import('./views/page/home/pageHome')
 const processList =()=> import('./views/page/process/processList')
@@ -24,6 +24,7 @@ export default new Router({
             name: 'home',
             component: home
         },
+
         {
             path:'/formDesign',
             name:'formDesign',
@@ -49,6 +50,11 @@ export default new Router({
             name:'test1',
             component:test1
         },
+        {
+            path:'/page',
+            name:'page',
+            component:page
+        },
 
         /** 页面*/
         {
@@ -60,7 +66,8 @@ export default new Router({
                     path:'/processList',
                     name:'processList',
                     component:processList
-                }
+                },
+
             ]
         },
 
