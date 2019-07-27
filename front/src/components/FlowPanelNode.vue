@@ -1,7 +1,5 @@
 <template>
 	<div>
-
-
 			<!-- 面板左侧导航菜单 -->
 			<div class="tab-title">
 
@@ -41,7 +39,8 @@
 		name: "FlowNodePanel",
 		data(){
 			return{
-				tabList: [{
+				tabList: [
+				    {
 					title: '资源配置',
 					content: [{
 						text: '资产数据表',

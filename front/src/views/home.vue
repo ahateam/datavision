@@ -18,7 +18,7 @@
 					<button class="btn" style="position:absolute;margin-left: 50%;left: 100px;">数据可视化</button>
 				</router-link>
 
-				<router-link to="/flowDesign">
+				<router-link to="/pageHome">
 					<button class="btn" style="margin-left: 50%;position: absolute;left: 260px;">流程图引擎2</button>
 				</router-link>
 			</div>

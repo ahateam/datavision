@@ -5,13 +5,15 @@ import store from './store'
 
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
+import util from 'ahaapi'
 import api from './commen/api'
 import commen from './commen/commen'
+
 
 Vue.use(ElementUI)
 Vue.config.productionTip = false
 
-
+Vue.prototype.$util = util
 Vue.prototype.$commen = commen.commen
 Vue.prototype.$api = api
 
