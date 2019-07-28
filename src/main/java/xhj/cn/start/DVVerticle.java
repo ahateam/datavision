@@ -2,7 +2,7 @@ package xhj.cn.start;
 
 import io.vertx.core.Vertx;
 import zyxhj.core.controller.TestController;
-import zyxhj.flow.controller.FlowController;
+import zyxhj.flow.service.FlowService;
 import zyxhj.utils.Singleton;
 import zyxhj.utils.ZeroVerticle;
 
@@ -25,7 +25,7 @@ public class DVVerticle extends ZeroVerticle {
 
 		initCtrl(ctrlMap, Singleton.ins(TestController.class, "test"));
 
-		initCtrl(ctrlMap, Singleton.ins(FlowController.class, "flow"));
+		initCtrl(ctrlMap, Singleton.ins(FlowService.class, "flow"));
 
 	}
 
