@@ -10,14 +10,28 @@
 		name: "FlowEditor",
 		props:{
             flowId:Number,
-			nodeList:Array
 		},
+
 		data(){
 			return{
 				nodeData: {
 					nodes: [],
 					edges: []
 				},
+				nodeList:[]
+			}
+		},
+		computed:{
+			getChangeNodeList(){
+				return this.$store.state.nodeList
+			}
+		},
+		watch:{
+			getChangeNodeList(newNodeList,oldNodeList){
+				// this.$store.state.flowData.graph
+				console.log(newNodeList)
+				console.log('111')
+				console.log(oldNodeList)
 			}
 		},
 		mounted() {
@@ -221,15 +235,6 @@
 					}
 				},
 			})
-
-
-
-
-			let cnt = {
-                pdId: this.flowId, // Long DefinitionId 流程定义编号
-                count: 500, // Integer
-                offset: 0, // Integer
-			}
 
 			this.nodeData.nodes = this.$store.state.nodeList
 			console.log('111111')

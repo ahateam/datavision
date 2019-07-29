@@ -87,35 +87,35 @@
                 addTitle:'',
                 tags:[],
                 lanes:[],
-                moduleId:567813484,
+                moduleKey:'测试平台1',
                 visual:[]
             }
         },
         methods:{
             /*获取数据*/
-            getProcessDefinition(cnt){
-                this.$api.getProcessDefinition(cnt,(res)=>{
-                    if(res.data.rc == this.$util.RC.SUCCESS){
-                        this.tableData = this.$util.tryParseJson(res.data.c)
-                    }else{
-                        this.tableData = []
-                    }
-                    if(this.tableData.length <this.count){
-                        this.pageOver = true
-                    }else{
-                        this.pageOver = false
-                    }
-                })
+            getPDList(cnt){
+                    this.$api.getPDList(cnt,(res)=>{
+                        if(res.data.rc == this.$util.RC.SUCCESS){
+                            this.tableData = this.$util.tryParseJson(res.data.c)
+                        }else{
+                            this.tableData = []
+                        }
+                        if(this.tableData.length <this.count){
+                            this.pageOver = true
+                        }else{
+                            this.pageOver = false
+                        }
+                    })
             },
             /** 分页*/
             changePage(page){
                 this.page = page
                 let cnt = {
-                    moduleId:this.moduleId,
+                    moduleKey:this.moduleKey,
                     offset:(this.page-1)*this.count,
                     count:this.count
                 }
-                this.getProcessDefinition(cnt)
+                this.getPDList(cnt)
             },
             /** 删除单个流程*/
             delBtn(row){
@@ -124,7 +124,7 @@
                         let cnt={
                             pdId:row.id
                         }
-                        this.$api.delProcessDefinition(cnt,(res)=>{
+                        this.$api.delPD(cnt,(res)=>{
                             if(res.data.rc == this.$util.RC.SUCCESS){
                                 this.$message.success('删除成功')
                                 this.$router.push('/page')
@@ -149,13 +149,13 @@
             },
             addFlowBtn(){
                 let cnt = {
-                    moduleId:this.moduleId,
+                    moduleKey:this.moduleKey,
                     title:this.addTitle,
                     tags:this.tags,
                     lanes:this.lanes,
                     visual:this.visual
                 }
-                this.$api.createProcessDefinition(cnt,(res)=>{
+                this.$api.createPD(cnt,(res)=>{
                     if(res.data.rc == this.$util.RC.SUCCESS){
                         this.$message.success('新增成功！')
                         this.$router.push('/page')
@@ -167,11 +167,11 @@
         },
         mounted(){
             let cnt={
-                moduleId:this.moduleId,
+                moduleKey:this.moduleKey,
                 offset:this.offset,
                 count:this.count
             }
-            this.getProcessDefinition(cnt)
+            this.getPDList(cnt)
 
         }
     }

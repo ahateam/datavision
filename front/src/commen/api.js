@@ -9,40 +9,44 @@ let api = {};
 console.log('开始调用ctrl');
 
 //获取流程图列表
-api.getProcessDefinition= function (cnt,callback) {
-    util.call(baseUrl+'/flow/getProcessDefinition', cnt, callback)
+api.getPDList= function (cnt,callback) {
+    util.call(baseUrl+'/flow/getPDList', cnt, callback)
 }
 //新增流程图
-api.createProcessDefinition= function (cnt,callback) {
-    util.call(baseUrl+'/flow/createProcessDefinition', cnt, callback)
+api.createPD= function (cnt,callback) {
+    util.call(baseUrl+'/flow/createPD', cnt, callback)
 }
 //删除单个流程
-api.delProcessDefinition= function (cnt,callback) {
-    util.call(baseUrl+'/flow/delProcessDefinition', cnt, callback)
+api.delPD = function (cnt,callback) {
+    util.call(baseUrl+'/flow/delPD', cnt, callback)
 }
-//查询单个流程
-api.getProcessDefinitionByPDId= function (cnt,callback) {
-    util.call(baseUrl+'/flow/getProcessDefinitionByPDId', cnt, callback)
+//获取流程下所有的节点
+api.getPDActivityList = function (cnt,callback) {
+    util.call(baseUrl+'/flow/getPDActivityList', cnt, callback)
 }
-
 //新增数据节点
-api.createProcessActivity= function (cnt,callback) {
-    util.call(baseUrl+'/flow/createProcessActivity', cnt, callback)
+api.createPDActivity= function (cnt,callback) {
+    util.call(baseUrl+'/flow/createPDActivity', cnt, callback)
 }
 //删除单个数据节点
 api.delPDActivity= function (cnt,callback) {
     util.call(baseUrl+'/flow/delPDActivity', cnt, callback)
 }
-//新增样式节点-修改节点-替换所有节点显示信息
-api.addVisualToDefinition= function (cnt,callback) {
-    util.call(baseUrl+'/flow/addVisualToDefinition', cnt, callback)
+//设置单个节点样式
+api.setPDActivityVisual= function (cnt,callback) {
+    util.call(baseUrl+'/flow/setPDActivityVisual', cnt, callback)
+}
+//获取所有的资源列表
+api.getPDAssetList= function (cnt,callback) {
+    util.call(baseUrl+'/flow/getPDAssetList', cnt, callback)
 }
 
-//获取所有节点信息
-api.getPDActivityList= function (cnt,callback) {
-    util.call(baseUrl+'/flow/getPDActivityList', cnt, callback)
+//保存设置所有的节点样式
+
+api.setPDActivityVisualList= function (cnt,callback) {
+    util.call(baseUrl+'/flow/setPDActivityVisualList', cnt, callback)
 }
 
-//
+
 export default api
 

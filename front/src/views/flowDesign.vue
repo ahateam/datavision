@@ -1,29 +1,24 @@
 <template>
     <div style="height: 100%">
-        <el-container style="height: 100%">
+        <el-container style="height: 100%" v-if="isLoadDom">
             <el-header class="header-box">Header</el-header>
             <el-container style="height: 100%;">
-                <el-aside width="200px" class="item-box" v-if="isLoadDom">
+                <el-aside width="200px" class="item-box" >
                     <node-list :flowId="flowId" @changeNodeList="changeNodeList"></node-list>
                 </el-aside>
                 <el-container>
                     <el-main class="main-box">
-                        <div class="center-box" v-if="isLoadDom">
+                        <div class="center-box" >
                             <flow-editor :flowId="flowId"></flow-editor>
                         </div>
-
                         <div class="info-box">
                             <div class="tab-box">
-
-                                <flow-panel-node></flow-panel-node>
+                                <flow-panel-node :flowId="flowId"></flow-panel-node>
                             </div>
-
                             <div class="show-box">
                                 <flow-panel-node-value></flow-panel-node-value>
                             </div>
                         </div>
-
-
                     </el-main>
                     <el-footer class="footer">
 
@@ -59,25 +54,31 @@
         },
         methods: {
             /** 获取样式节点信息*/
-            getProcessDefinitionByPDId(cnt){
-                this.$api.getProcessDefinitionByPDId(cnt, (res) => {
+            getPDActivityList(cnt){
+                this.nodeList = []
+                this.$api.getPDActivityList(cnt, (res) => {
                     if(res.data.rc == this.$util.RC.SUCCESS){
-                        this.nodeList = this.$util.tryParseJson(res.data.c).visual
+                        let arr = this.$util.tryParseJson(res.data.c)
+                        for(let i=0;i<arr.length;i++){
+                            this.nodeList.push(arr[i].visual)
+                        }
                     }else{
                         this.nodeList = []
                     }
+                    console.log(this.nodeList)
                     this.$store.state.nodeList = this.nodeList
                     this.isLoadDom = true
-                    console.log(this.nodeList)
                 })
             },
             /** 更新节点样式列表*/
             changeNodeList(isChangeNode){
                 if(isChangeNode){
                     let cnt = {
-                        pdId: this.flowId
+                        pdId: this.flowId,
+                        count:500,
+                        offset:0
                     }
-                    this.getProcessDefinitionByPDId(cnt)
+                    this.getPDActivityList(cnt)
                 }
             }
         },
@@ -89,9 +90,11 @@
         mounted() {
             this.flowId = this.$store.state.flowId
             let cnt = {
-                pdId: this.flowId
+                pdId: this.flowId,
+                count:500,
+                offset:0
             }
-            this.getProcessDefinitionByPDId(cnt)
+            this.getPDActivityList(cnt)
         }
     }
 </script>

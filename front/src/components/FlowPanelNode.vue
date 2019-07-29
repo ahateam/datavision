@@ -13,7 +13,7 @@
 			<div class="tab-item">
 				<!--资源配置右侧-->
 				<div v-if="tabActive == 0">
-					<flow-panel-node-res :content="tabList[tabActive].content"></flow-panel-node-res>
+					<flow-panel-node-res :content="tabList[tabActive].content" ></flow-panel-node-res>
 				</div>
 				<!--权限配置右侧-->
 				<div v-if="tabActive == 1">
@@ -227,6 +227,9 @@
 				permissionTabActive: 0,
 			}
 		},
+		props:{
+			flowId:Number||String
+		},
 		components: {
 			FlowPanelNodeRes,
 			FlowPanelNodeAuth,
@@ -247,6 +250,19 @@
 				this.graph.updateItem(item, model)
 			},
 		},
+		mounted(){
+			console.log('111122')
+			console.log(this.flowId)
+			let cnt = {
+				pdId: this.flowId, // Long 所属流程定义ProcessDefinition编号
+				// activityIds: activityIds, // JSONArray <选填> 所属流程节点Activity编号，不填表示只查看流程定义中的全局资产
+				count: 500, // Integer
+				offset: 0, // Integer
+			}
+			this.$api.getPDAssetList(cnt,(res)=>{
+				console.log(res)
+			})
+		}
 
 	}
 </script>

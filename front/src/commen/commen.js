@@ -40,6 +40,34 @@ commen.getFormulaResult=function (item,formula) {
     return value
 }
 
+/** @getGraphNodes  根据canvas图形更新 全局状态nodeList
+ *  @graphNodes  最新的画图的节点列表 Array
+ *  @return   只有model的数组 Array
+ * */
+commen.getGraphNodes = function (graphNodes) {
+    let arr = []
+    for(let i=0;i<graphNodes.length;i++){
+        arr.push(graphNodes[i]._cfg.model)
+    }
+    console.log(arr)
+    return arr
+}
+/** @getGraphNodesObj  根据canvas图形更新 全局状态nodeList
+ *  @graphNodes  最新的画图的节点列表 Array
+ *  @return   只有model的数组 Array 带有id的列表
+ * */
+commen.getGraphNodesObj = function (graphNodes) {
+    let arr = []
+    for(let i=0;i<graphNodes.length;i++){
+        let obj={}
+        obj.id =graphNodes[i]._cfg.model.id
+        obj.visual = graphNodes[i]._cfg.model
+        arr.push(obj)
+    }
+    console.log(arr)
+    return arr
+}
+
 
 export default {
     commen

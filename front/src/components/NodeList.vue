@@ -60,32 +60,28 @@
                     receivers: [], // JSONArray 接收者（departments部门，roles角色，users用户）
                     actions: [], // JSONArray 行为动作
                 };
-                this.$api.createProcessActivity(cnt,(res)=>{
+                this.$api.createPDActivity(cnt,(res)=>{
                     if(res.data.rc == this.$util.RC.SUCCESS){
                         this.newNodeId = res.data.c
-                        this.addNodeStyle()
+                        this.addNodeStyle( this.newNodeId )
                     }else{
                         this.$message.error('新增节点失败')
                     }
                 })
             },
 
-            /* 新增样式节点*/
-            addNodeStyle(){
-                this.nodeData.id = this.newNodeId
-                this.nodeList.push(this.nodeData)
-                console.log(this.nodeList)
-                let visual = JSON.parse(JSON.stringify(this.nodeList))
+            /* 新增设置节点样式*/
+            addNodeStyle(newNodeId){
+                let visual = JSON.parse(JSON.stringify(this.nodeData))
+                visual.id = newNodeId
                 let cnt = {
-                    pdId: this.flowId, // Long 流程定义编号
+                    activityId: newNodeId, // Long 流程定义编号
                     visual: visual,
                 }
-                this.$api.addVisualToDefinition(cnt,(res)=>{
-                    console.log(res)
+                this.$api.setPDActivityVisual(cnt,(res)=>{
                     if(res.data.rc== this.$util.RC.SUCCESS){
-                        console.log('向父组件提交重新请求数据的请求')
-                        this.$emit('changeNodeList',this.isChangeNode)
-
+                        this.$store.state.flowData.graph.addItem('node',visual)
+                        this.nodeList = this.$commen.getGraphNodes(this.$store.state.flowData.graph.getNodes())
                     }else{
                         this.$message.error('新增节点失败')
                         this.delPDActivity()
@@ -107,15 +103,21 @@
                 })
             },
             /** 保存显示层样式*/
+
             saveNodeBtn(){
                 console.log('1111222')
-                let visual = this.$store.state.flowData.graph._cfg.data.nodes
+                let visual =this.$commen.getGraphNodesObj(this.$store.state.flowData.graph.getNodes())
                 let cnt = {
                     pdId: this.flowId, // Long 流程定义编号
-                    visual: visual, //
+                    activityVisualList: visual, //
+                    count:visual.length,
+                    offset:0
                 }
-                console.log('test')
-                this.$api.addVisualToDefinition(cnt,(res)=>{
+
+                console.log(cnt)
+
+                this.$api.setPDActivityVisualList(cnt,(res)=>{
+                    console.log(res)
                     if(res.data.rc == this.$util.RC.SUCCESS){
                         this.$message.success('保存成功')
                     }else{
