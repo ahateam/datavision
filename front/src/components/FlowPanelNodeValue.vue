@@ -29,34 +29,34 @@
         },
         computed:{
             changeGraphId(){
-                return this.$store.state.flowData.graphActive.graphId
+                return this.$store.state.flowData.nodeActive
             }
         },
         watch:{
             changeGraphId(val){
-                console.log(val)
+
                 this.newGraphId = val
-                this.newGraphLabel = this.$store.state.flowData.graphActive.graphLabel
-                console.log( this.newGraphId)
+                this.newGraphLabel ='1111'
+
 
             }
         },
         methods:{
             changeItem() {
-                const item = this.$store.state.flowData.graph.findById(this.newGraphId)
-                let model = item._cfg.model
-                model.label = this.newGraphLabel
-                this.$store.state.flowData.graph.updateItem(item, model)
+                // const item = this.$store.state.flowData.graph.findById(this.newGraphId)
+                // let model = item._cfg.model
+                // model.label = this.newGraphLabel
+                // this.$store.state.flowData.graph.updateItem(item, model)
             },
             delItem() {
-                const item = this.$store.state.flowData.graph.findById(this.newGraphId)
-                this.$store.state.flowData.graph.removeItem(item)
+                // const item = this.$store.state.flowData.graph.findById(this.newGraphId)
+                // this.$store.state.flowData.graph.removeItem(item)
             },
         },
         mounted() {
-            this.newGraphId = this.$store.state.flowData.graphActive.graphId
-            this.newGraphLabel = this.$store.state.flowData.graphActive.graphLabel
-            this.newGraphType = this.$store.state.flowData.graphActive.graphType
+            this.newGraphId = this.$store.state.flowData.nodeActive
+            this.newGraphLabel = '1111'
+            this.newGraphType = '222'
         }
     }
 </script>

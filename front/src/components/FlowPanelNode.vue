@@ -228,7 +228,7 @@
 			}
 		},
 		props:{
-			flowId:Number||String
+			flowId:String
 		},
 		components: {
 			FlowPanelNodeRes,

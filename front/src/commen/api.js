@@ -42,11 +42,13 @@ api.getPDAssetList= function (cnt,callback) {
 }
 
 //保存设置所有的节点样式
-
 api.setPDActivityVisualList= function (cnt,callback) {
     util.call(baseUrl+'/flow/setPDActivityVisualList', cnt, callback)
 }
-
+//删除单个节点所有数据
+api.delPDActivity= function (cnt,callback) {
+    util.call(baseUrl+'/flow/delPDActivity', cnt, callback)
+}
 
 export default api
 

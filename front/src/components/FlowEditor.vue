@@ -9,7 +9,7 @@
 	export default {
 		name: "FlowEditor",
 		props:{
-            flowId:Number,
+            flowId:String,
 		},
 
 		data(){
@@ -18,102 +18,54 @@
 					nodes: [],
 					edges: []
 				},
-				nodeList:[]
+				nodeList:[],
+				activeNode:''
 			}
 		},
 		computed:{
-			getChangeNodeList(){
-				return this.$store.state.nodeList
+			getActiveNode(){
+				return this.$store.state.flowData.nodeActive
 			}
 		},
 		watch:{
-			getChangeNodeList(newNodeList,oldNodeList){
-				// this.$store.state.flowData.graph
-				console.log(newNodeList)
-				console.log('111')
-				console.log(oldNodeList)
+			/** 根据动态的节点id 更改不同的canvas节点选中状态
+			 * */
+			getActiveNode(val){
+				this.activeNode = val
+				const graph = this.$store.state.flowData.graph
+				let nodes = graph.getNodes()
+				for(let i=0;i<nodes.length;i++){
+					if(nodes[i]._cfg.id == val){
+						this.$store.state.flowData.graph.setItemState(nodes[i], 'active', true)
+					}else{
+						this.$store.state.flowData.graph.setItemState(nodes[i], 'active', false)
+					}
+				}
 			}
 		},
 		mounted() {
 			let _this = this
-			G6.registerNode('diamond', {
-				draw(cfg, group) {
-					const size = cfg.size || [60, 60]; // 如果没有 size 时的默认大小
-					const width = size[0];
-					const height = size[1];
-					console.log('222222')
-					console.log(cfg)
-					const shape = group.addShape('path', {
-						attrs: {
-							//  / 1 \
-							// 4     2
-							//  \ 3 /
-							// path中的M、L等是SVG中的概念
-							path: [
-								['M', 0, 0 - height / 2], // 上部顶点
-								['L', width / 2, 0], // 右侧点
-								['L', 0, height / 2], // 下部
-								['L', -width / 2, 0], // 左侧
-								['Z'] // 封闭
-							],
-
-							getAnchorPoints() {
-								return [
-									[0, 0, {
-										type: 'circle',
-										style: {
-											stroke: 'red',
-											fill: 'white'
-										}
-									}],
-									[0.5, 0, {
-										type: 'circle',
-										style: {
-											stroke: 'red',
-											fill: 'white'
-										}
-									}],
-									[1, 0, {
-										type: 'circle',
-										style: {
-											stroke: 'red',
-											fill: 'white'
-										}
-									}],
-									[1, 1, {
-										type: 'circle',
-										style: {
-											stroke: 'red',
-											fill: 'white'
-										}
-									}],
-								]
-							},
-
-							stroke: '#5cdbd3', // 颜色应用到边上，如果应用到填充，则使用 fill: cfg.color
-							fill: '#e8fffb',
-							radius: 5,
+			G6.registerNode('round-rect', {
+				// 设置状态
+				setState(name, value, item) {
+					const group = item.getContainer();
+					const shape = group.get('children')[0]; // 顺序根据 draw 时确定
+					if(name == 'mouse'){
+						if(value){
+							shape.attr('fill', '#e8f8ff');
+						}else{
+							shape.attr('fill', '#fff');
 						}
-					});
-					if (cfg.label) { // 如果有文本
-						// 如果需要复杂的文本配置项，可以通过 labeCfg 传入
-						// const style = (cfg.labelCfg && cfg.labelCfg.style) || {};
-						// style.text = cfg.label;
-						group.addShape('text', {
-							// attrs: style
-							attrs: {
-								x: 0, // 居中
-								y: 0,
-								textAlign: 'center',
-								textBaseline: 'middle',
-								text: cfg.label,
-								fill: '#666'
-							}
-						});
+					}else if( name == 'active'){
+						if(value){
+							shape.attr('fill', '#e8f8ff');
+						}else{
+							shape.attr('fill', '#fff');
+						}
 					}
-					return shape;
+
 				}
-			})
+			}, 'rect');
 			G6.registerBehavior('click-add-edge', {
 				getEvents() {
 					return {
@@ -176,46 +128,58 @@
 				},
 				getEvents() {
 					return {
+						'node:mouseenter':'onMouseEnter',
+						'node:mouseleave':'onMouseLeave',
 						'node:click': 'onNodeClick',
 						'canvas:click': 'onCanvasClick'
 					};
 				},
-				onNodeClick(e) {
+				onMouseEnter(e){
 					const graph = _this.$store.state.flowData.graph;
 					const item = e.item;
-					console.log('1111')
 					if (item.hasState('active')) {
-						graph.setItemState(item, 'active', false);
+						return
+					}else{
+						graph.setItemState(item, 'mouse', true)
+					}
+				},
+				onMouseLeave(e){
+					const graph = _this.$store.state.flowData.graph
+					const item = e.item
+					if (item.hasState('active')) {
+						return
+					}else{
+						graph.setItemState(item, 'mouse', false)
+					}
+
+				},
+				onNodeClick(e) {
+					const graph = _this.$store.state.flowData.graph
+					const item = e.item
+					if (item.hasState('active')) {
+						graph.setItemState(item, 'active', false)
 						return;
 					}
 					// this 上即可取到配置，如果不允许多个active，先取消其他节点的active状态
-					if (!this.multiple) {
-						this.removeNodesState();
-					}
+					this.removeNodesState()
 					// 置点击的节点状态为active
-					_this.$store.state.flowData.graphActive.graphId = item._cfg.id;
-					_this.$store.state.flowData.graphActive.graphLabel = item._cfg.model.label;
-					_this.$store.state.flowData.graphActive.graphType = item._cfg.type;
-					graph.setItemState(item, 'active', true);
+					_this.$store.state.flowData.nodeActive = item._cfg.id
+					graph.setItemState(item, 'active', true)
 				},
 				onCanvasClick(e) {
 					// shouldUpdate可以由用户复写，返回 true 时取消所有节点的active状态
-					console.log('2223333')
-
 					if (this.shouldUpdate(e)) {
-						this.removeNodesState();
+						_this.$store.state.flowData.nodeActive='0'
+						this.removeNodesState()
 					}
 				},
 				removeNodesState() {
-					_this.$store.state.flowData.graphActive.graphId = '';
-					_this.$store.state.flowData.graphActive.graphLabel = '';
-					_this.$store.state.flowData.graphActive.graphType = '';
-					_this.$store.state.flowData.graph.findAllByState('active').forEach(node => {
-						_this.$store.state.flowData.graph.setItemState(node, 'active', false);
-					});
+					_this.$store.state.flowData.nodeActive = '0'
+					_this.$store.state.flowData.graph.getNodes().forEach(node => {
+							_this.$store.state.flowData.graph.setItemState(node, 'active', false)
+					})
 				}
 			})
-
 			const graph = new G6.Graph({
 				container: 'canvasBox',
 				width: document.body.clientWidth - 540,
@@ -235,22 +199,20 @@
 					}
 				},
 			})
-
 			this.nodeData.nodes = this.$store.state.nodeList
-			console.log('111111')
-			console.log(this.nodeList)
-			console.log(this.nodeData)
-
 			graph.data(this.nodeData)
 			graph.render()
 			graph.setMode('default')
 
 			_this.$store.state.flowData.graph = graph
-
+			this.activeNode = this.$store.state.flowData.nodeActive
 		}
 	}
 </script>
 
-<style scoped>
+<style scoped lang="scss">
+	#canvasBox{
+		cursor: pointer;
+	}
 
 </style>

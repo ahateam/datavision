@@ -139,7 +139,7 @@
 
             /** 跳转页面*/
             checkBtn(row){
-                this.$store.state.flowId = row.id
+                localStorage.setItem('flowId',row.id+'')
                 this.$router.push('/flowDesign')
             },
 
@@ -166,6 +166,7 @@
             }
         },
         mounted(){
+            localStorage.setItem('flowId','')
             let cnt={
                 moduleKey:this.moduleKey,
                 offset:this.offset,

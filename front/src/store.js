@@ -8,16 +8,12 @@ export default new Vuex.Store({
       /* 导航栏*/
       navDefaultActive:'0',
       /*流程图相关*/
-      flowId:'',
       nodeList:[],
       flowData:{
         graph:'',
         /*选中节点*/
-        graphActive:{
-          graphId:'',
-          graphLabel:'',
-          graphType:'',
-        }
+        nodeActive:'0',
+
       }
   },
   mutations: {

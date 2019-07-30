@@ -57,6 +57,8 @@
             getPDActivityList(cnt){
                 this.nodeList = []
                 this.$api.getPDActivityList(cnt, (res) => {
+
+
                     if(res.data.rc == this.$util.RC.SUCCESS){
                         let arr = this.$util.tryParseJson(res.data.c)
                         for(let i=0;i<arr.length;i++){
@@ -82,13 +84,12 @@
                 }
             }
         },
-        created(){
-            if(this.$store.state.flowId ==undefined ||this.$store.state.flowId ==''){
+        mounted() {
+            this.flowId = localStorage.getItem('flowId')
+            if(this.flowId == undefined || this.flowId == ''){
+                this.$message.error('请先选择一个流程')
                 this.$router.push('/processList')
             }
-        },
-        mounted() {
-            this.flowId = this.$store.state.flowId
             let cnt = {
                 pdId: this.flowId,
                 count:500,

@@ -6,8 +6,21 @@
         <div class="node-list">
             <div class="node-list-item"
                 v-for="(item,index) in nodeList"
-                :key="index">
-                {{item.label}}
+                :key="index"
+                 @mouseenter="delBtnShow = item.id"
+                 @mouseleave="delBtnShow =0"
+                @click="checkNodeBtn(item)">
+                <div :class="activeNode==item.id?'item-box item-box-active': 'item-box' " >
+                   <div class="item-label">
+                       {{item.label}}
+                   </div>
+                    <span  class="del-box"
+                           v-if="delBtnShow == item.id"
+                           @click="delNodeItemBtn(index,item)">
+                        <i class="iconfont icon-jiufuqianbaoicon08"></i>
+                    </span>
+                </div>
+
             </div>
         </div>
         <div class="node-btn">
@@ -23,7 +36,17 @@
     export default {
         name: "nodeList",
         props:{
-            flowId:Number,
+            flowId:String,
+        },
+        computed:{
+            getActiveNode(){
+                return this.$store.state.flowData.nodeActive
+            }
+        },
+        watch:{
+            getActiveNode(val){
+                this.activeNode =val
+            }
         },
         data(){
             return{
@@ -33,16 +56,19 @@
                         y: 200,
                         size: [70, 40],
                         label: '常规节点',
-                        shape: 'rect',
+                        shape: 'round-rect',
                         style: {
                             stroke: '#1890ff',
-                            fill: '#e8f8ff',
+                            fill: '#fff',
                             radius: 5,
                         }
                 },
                 newNodeId:'',
                 isChangeNode:true,
-                nodeList:[]
+                nodeList:[],
+                activeNode:'',
+                delBtnShow:'0',
+
             }
         },
         methods:{
@@ -73,15 +99,19 @@
             /* 新增设置节点样式*/
             addNodeStyle(newNodeId){
                 let visual = JSON.parse(JSON.stringify(this.nodeData))
+
                 visual.id = newNodeId
                 let cnt = {
                     activityId: newNodeId, // Long 流程定义编号
                     visual: visual,
                 }
                 this.$api.setPDActivityVisual(cnt,(res)=>{
+
                     if(res.data.rc== this.$util.RC.SUCCESS){
+                        this.$store.state.flowData.nodeActive = newNodeId
                         this.$store.state.flowData.graph.addItem('node',visual)
                         this.nodeList = this.$commen.getGraphNodes(this.$store.state.flowData.graph.getNodes())
+
                     }else{
                         this.$message.error('新增节点失败')
                         this.delPDActivity()
@@ -103,34 +133,68 @@
                 })
             },
             /** 保存显示层样式*/
-
             saveNodeBtn(){
-                console.log('1111222')
-                let visual =this.$commen.getGraphNodesObj(this.$store.state.flowData.graph.getNodes())
+                let visual =this.$commen.getGraphNodes(this.$store.state.flowData.graph.getNodes())
                 let cnt = {
                     pdId: this.flowId, // Long 流程定义编号
                     activityVisualList: visual, //
                     count:visual.length,
                     offset:0
                 }
-
-                console.log(cnt)
-
                 this.$api.setPDActivityVisualList(cnt,(res)=>{
-                    console.log(res)
+
                     if(res.data.rc == this.$util.RC.SUCCESS){
-                        this.$message.success('保存成功')
+                        this.$message.success('操作成功')
                     }else{
                         this.$message.error('操作失败')
                     }
                 })
 
+            },
+            checkNodeBtn(item){
+                this.$store.state.flowData.nodeActive = item.id
+
+            },
+
+            /** 点击删除按钮删除节点*/
+            delNodeItemBtn(index,item){
+
+                let visual =this.$commen.getGraphNodes(this.$store.state.flowData.graph.getNodes())
+                let cnt = {
+                    pdId: this.flowId, // Long 流程定义编号
+                    activityVisualList: visual, //
+                    count:visual.length,
+                    offset:0
+                }
+                this.$api.setPDActivityVisualList(cnt,(res)=>{
+
+                    if(res.data.rc == this.$util.RC.SUCCESS){
+                        let cnt = {
+                            pdId: this.flowId, // Long 流程定义编号
+                            activityId: item.id, // Long 流程节点编号
+                        }
+                        this.$api.delPDActivity(cnt,(res)=>{
+
+                            if(res.data.rc == this.$util.RC.SUCCESS){
+                                this.$message.success('删除成功')
+                            }else{
+                                this.$message.error('删除失败')
+                            }
+                            this.$router.push('/page')
+                        })
+                    }else{
+                        this.$message.error('删除失败')
+                    }
+                })
+
+
             }
+
+
         },
         mounted(){
             this.nodeList=this.$store.state.nodeList
-            console.log('2222')
-            console.log(this.nodeList)
+            this.activeNode = this.$store.state.flowData.nodeActive
         }
     }
 </script>
@@ -172,17 +236,61 @@
         height: 40px;
         line-height: 40px;
         font-size: 14px;
-        color: #666;
-        border-bottom: 1px solid #e8e8e8;
-        cursor: pointer;
+
         overflow: hidden;
         text-overflow:ellipsis;
         white-space: nowrap;
     }
-    .node-list-item:hover{
-        background: #e8f8ff;
-        color: #333;
-        font-weight: 600;
+
+    .item-box{
+        width: 90%;
+        height:30px;
+        margin-top: 5px;
+
+        border: 1px solid #1890ff;
+        background: #fff;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: all .5s;
+        position: relative;
     }
+    .item-label{
+        width: 95%;
+        height:30px;
+        line-height: 30px;
+        color: #666;
+        font-size: 14px;
+        text-align: center;
+        overflow: hidden;
+        text-overflow:ellipsis;
+        white-space: nowrap;
+    }
+    .item-box:hover{
+        border: 1.5px solid #1890ff;
+    }
+    .item-box:active{
+        background: #e8f8ff;
+    }
+    .item-box-active{
+        background: #e8f8ff;
+    }
+    .del-box{
+        width: 18px;
+        height: 18px;
+        display: block;
+        position: absolute;
+        top: -5px;
+        right: -9px;
+        text-align: center;
+        line-height: 20px;
+        background: #fff;
+        border-radius: 50%;
+    }
+    .del-box i{
+        font-size: 18px;
+        color: #f60;
+    }
+
+
 
 </style>
