@@ -13,7 +13,16 @@
                         </div>
                         <div class="info-box">
                             <div class="tab-box">
-                                <flow-panel-node :flowId="flowId"></flow-panel-node>
+                                <flow-panel-node
+                                        v-if="this.$store.state.flowData.nodeActive !='0'"
+                                        :flowId="flowId">
+                                </flow-panel-node>
+                                <flow-public-panel-node
+                                        v-else
+                                        :flowId="flowId">
+
+                                </flow-public-panel-node>
+
                             </div>
                             <div class="show-box">
                                 <flow-panel-node-value></flow-panel-node-value>
@@ -35,6 +44,7 @@
     import FlowPanelNode from '@/components/FlowPanelNode'
     import FlowPanelNodeValue from '@/components/FlowPanelNodeValue'
     import NodeList from '@/components/NodeList'
+    import FlowPublicPanelNode from '@/components/FlowPublicPanelNode'
 
     export default {
         name: "flowDesign",
@@ -42,7 +52,8 @@
             FlowEditor,
             FlowPanelNode,
             FlowPanelNodeValue,
-            NodeList
+            NodeList,
+            FlowPublicPanelNode
         },
         data() {
             return {
@@ -142,7 +153,7 @@
     /*右侧内容样式*/
     .tab-box {
         width: 100%;
-        height: 400px;
+        height: 440px;
     }
 
     .show-box {

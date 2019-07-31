@@ -50,5 +50,29 @@ api.delPDActivity= function (cnt,callback) {
     util.call(baseUrl+'/flow/delPDActivity', cnt, callback)
 }
 
+/** 资源相关*/
+//获取资源table列表
+api.getTableSchemas= function (cnt,callback) {
+    util.call(baseUrl+'/table/getTableSchemas', cnt, callback)
+}
+//获取资源附件 annex列表
+api.getAnnexList= function (cnt,callback) {
+    util.call(baseUrl+'/annex/getAnnexList', cnt, callback)
+}
+
+/** 权限相关*/
+//获取部门列表
+api.getDepartmentList= function (cnt,callback) {
+    util.call(baseUrl+'/flow/getDepartmentList', cnt, callback)
+}
+//获取用户角色列表
+api.getUserRoleList= function (cnt,callback) {
+    util.call(baseUrl+'/flow/getUserRoleList', cnt, callback)
+}
+//获取用户列表
+api.getUserList= function (cnt,callback) {
+    util.call(baseUrl+'/flow/getUserList', cnt, callback)
+}
+
 export default api
 
