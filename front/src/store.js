@@ -13,7 +13,7 @@ export default new Vuex.Store({
         graph:'',
         /*选中节点*/
         nodeActive:'0',
-
+        nodeActiveInfo:{}
       }
   },
   mutations: {

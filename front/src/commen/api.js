@@ -40,6 +40,10 @@ api.setPDActivityVisual= function (cnt,callback) {
 api.getPDAssetList= function (cnt,callback) {
     util.call(baseUrl+'/flow/getPDAssetList', cnt, callback)
 }
+//获取单个节点的所有详细信息
+api.getPDActivityById = function (cnt,callback) {
+    util.call(baseUrl+'/flow/getPDActivityById', cnt, callback)
+}
 
 //保存设置所有的节点样式
 api.setPDActivityVisualList= function (cnt,callback) {
@@ -51,13 +55,20 @@ api.delPDActivity= function (cnt,callback) {
 }
 
 /** 资源相关*/
+//创建资源
+
+api.createAssetDesc= function (cnt,callback) {
+    util.call(baseUrl+'/flow/createAssetDesc', cnt, callback)
+}
+
 //获取资源table列表
 api.getTableSchemas= function (cnt,callback) {
     util.call(baseUrl+'/table/getTableSchemas', cnt, callback)
 }
-//获取资源附件 annex列表
-api.getAnnexList= function (cnt,callback) {
-    util.call(baseUrl+'/annex/getAnnexList', cnt, callback)
+//修改节点资源/权限/行为信息
+
+api.editPDActivity= function (cnt,callback) {
+    util.call(baseUrl+'/flow/editPDActivity', cnt, callback)
 }
 
 /** 权限相关*/

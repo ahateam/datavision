@@ -16,7 +16,7 @@
                    </div>
                     <span  class="del-box"
                            v-if="delBtnShow == item.id"
-                           @click="delNodeItemBtn(index,item)">
+                           @click.stop="delNodeItemBtn(index,item)">
                         <i class="iconfont icon-jiufuqianbaoicon08"></i>
                     </span>
                 </div>
@@ -83,9 +83,11 @@
                     pdId: this.flowId, // Long 流程定义编号
                     title: this.nodeData.label, // String 活动标题
                     part: '111', // String 所属泳道
-                    receivers: [], // JSONArray 接收者（departments部门，roles角色，users用户）
+                    receivers: {departments:[],roles:[],users:[]}, // JSONArray 接收者（departments部门，roles角色，users用户）
                     actions: [], // JSONArray 行为动作
+                    assetDesc:{table:[],report:[],file:[]},
                 };
+                console.log( typeof  cnt.receivers)
                 this.$api.createPDActivity(cnt,(res)=>{
                     if(res.data.rc == this.$util.RC.SUCCESS){
                         this.newNodeId = res.data.c
@@ -108,9 +110,14 @@
                 this.$api.setPDActivityVisual(cnt,(res)=>{
 
                     if(res.data.rc== this.$util.RC.SUCCESS){
-                        this.$store.state.flowData.nodeActive = newNodeId
+
+
+
+
+
                         this.$store.state.flowData.graph.addItem('node',visual)
                         this.nodeList = this.$commen.getGraphNodes(this.$store.state.flowData.graph.getNodes())
+                        this.getNodeInfo(newNodeId)
 
                     }else{
                         this.$message.error('新增节点失败')
@@ -152,8 +159,24 @@
 
             },
             checkNodeBtn(item){
-                this.$store.state.flowData.nodeActive = item.id
+                this.getNodeInfo(item.id)
+            },
 
+            /** 获取节点的详细信息*/
+            getNodeInfo(nodeId){
+                let cnt = {
+                    pdid: this.flowId, // Long 流程定义编号
+                    activityid: nodeId, // Long 流程节点编号
+                }
+                this.$api.getPDActivityById(cnt,(res)=>{
+                    if(res.data.rc == this.$util.RC.SUCCESS){
+                        this.nodeInfo = this.$util.tryParseJson(res.data.c)
+                    }else{
+                        this.nodeInfo = {}
+                    }
+                    this.$store.state.flowData.nodeActiveInfo = this.nodeInfo
+                    this.$store.state.flowData.nodeActive = nodeId
+                })
             },
 
             /** 点击删除按钮删除节点*/
