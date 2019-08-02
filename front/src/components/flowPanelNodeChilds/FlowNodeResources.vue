@@ -3,105 +3,92 @@
     <div>
         <div class="add-resouce">
             <el-button type="success" size="mini" @click="addShowAssetBtn">
-                + 新增资源
+                + 节点所需资源
             </el-button>
         </div>
         <div style="margin-top: 10px">
-            <el-tabs v-model="activeName" type="card" >
-                <el-tab-pane label="表格" name="table" >
-                    <div class="text-info" v-if="tableList.length ==0 ">
-                        暂无表格数据
-                    </div>
-                    <div v-else class="item-list-box">
-                        <div class="item-list"
-                             v-for="(item,index) in tableList"
-                             :key="index"
-                             @click="addTableBtn(item)">
-                            {{item.alias}}
+
+            <el-tabs v-model="activeName" type="card">
+                <el-tab-pane label="表格" name="table">
+                    <div>
+                        <div class="text-info"
+                             v-if="assetDesc.table.length ==0 ">
+                            暂无选中表格数据
+                        </div>
+                        <div v-else  class="item-list-box">
+                            <el-tag
+                                    class="tag-item-box"
+                                    v-for="(item,index) in assetDesc.table"
+                                    :key="index"
+                                    @close="delItemAssetDesc(item)"
+                                    closable>
+                                {{item.name}}
+                            </el-tag>
                         </div>
                     </div>
                 </el-tab-pane>
                 <el-tab-pane label="报表" name="report">
-                    <div class="text-info" v-if="reportList.length ==0 ">
-                        暂无报表数据
-                    </div>
-                    <div v-else class="item-list-box">
+                    <div>
+                        <div class="text-info"
+                             v-if="assetDesc.report.length ==0 ">
+                            暂无选中报表数据
+                        </div>
+                        <div v-else class="item-list-box">
 
+
+                            <el-tag
+                                    class="tag-item-box"
+                                    v-for="(item,index) in assetDesc.report"
+                                    :key="index"
+                                    @close="delItemAssetDesc(item)"
+                                    closable>
+                                {{item.name}}
+                            </el-tag>
+                        </div>
                     </div>
                 </el-tab-pane>
                 <el-tab-pane label="文件" name="file">
-                    <div class="text-info" v-if="fileList.length ==0 ">
-                        暂无文件数据
-                    </div>
-                    <div v-else class="item-list-box">
-
+                    <div>
+                        <div class="text-info"
+                             v-if="assetDesc.file.length ==0 ">
+                            暂无选中文件数据
+                        </div>
+                        <div v-else class="item-list-box">
+                            <el-tag
+                                    class="tag-item-box"
+                                    v-for="(item,index) in assetDesc.file"
+                                    :key="index"
+                                    @close="delItemAssetDesc(item)"
+                                    closable>
+                                {{item.name}}
+                            </el-tag>
+                        </div>
                     </div>
                 </el-tab-pane>
             </el-tabs>
         </div>
 
 
-        <div class="active-node-list">
-            <div class="active-node-title">
-                已选中资源
-            </div>
-            <div class="active-node-content">
-                <div class="active-node-item-title">
-                    选中表格
-                </div>
-                <div class="active-node-item-content">
-                    <span v-for="(item,index) in assetDesc.table"
-                          :key="index">
-                          <el-tag size="small"
-                                  class="tag-box"
-                                  closable
-                                  @close="delTableActiveItem(index)">
-                                {{item.alias}}
-                          </el-tag>
-                    </span>
-                </div>
-
-                <div class="active-node-item-title" style="margin-top: 20px">
-                    选中报表
-                </div>
-                <div class="active-node-item-content">
-                     <span v-for="(item,index) in assetDesc.report"
-                           :key="index">
-                          <el-tag size="small"
-                                  class="tag-box"
-                                  closable>
-                                {{item.name}}
-                          </el-tag>
-                    </span>
-                </div>
-                <div class="active-node-item-title" style="margin-top: 20px">
-                    选中文件
-                </div>
-                <div class="active-node-item-content">
-                        <span v-for="(item,index) in assetDesc.file"
-                              :key="index">
-                          <el-tag size="small"
-                                  class="tag-box"
-                                  closable>
-                                {{item.name}}
-                          </el-tag>
-                    </span>
-                </div>
-
-            </div>
-        </div>
-
-
         <!--弹出层-->
-        <el-dialog title="新增资源定义" :visible.sync="showAddAssetModel">
+        <el-dialog title="创建所需资源" :visible.sync="showAddAssetModel">
             <el-form>
                 <el-form-item label="资源名称" label-width="100px">
                     <el-input v-model="addAsset.name" autocomplete="off" placeholder="请输入资源名称"></el-input>
                 </el-form-item>
                 <el-form-item label="资源类型" label-width="100px">
-                    <el-select v-model="addAsset.type" placeholder="请选择资源类型" style="width: 100%">
+                    <el-select v-model="addAsset.type"
+                               placeholder="请选择资源类型" style="width: 100%"
+                               @change="getAssetList">
                         <el-option :label="item.val" :value="item.key"
                                    v-for="(item,index) in typeList" :key="index"></el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="资源对象" label-width="100px"
+                              v-if="addAsset.type == 'table' || addAsset.type == 'report'">
+                    <el-select v-model="addAsset.uri"
+                               placeholder="请选择资源对象" style="width: 100%">
+                        <el-option :label="item.alias" :value="item.id"
+                                   v-for="(item,index) in assetList" :key="index"></el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item label="是否必须" label-width="100px">
@@ -133,121 +120,181 @@
             return {
                 activeName: 'table',
 
-                assetDesc: {},
-
                 /** 当前节点能够选择的资源列表*/
-                tableList: [],
-                reportList: [],
-                fileList: [],
+                assetDesc: {table: [], report: [], file: []},
+
 
                 /** 当前节点已经选中的资源列表*/
                 tableActiveList: [],
                 reportActiveList: [],
                 fileACtiveList: [],
 
-                typeList:[{key:'table',val:'表格'},{key:'report',val:'报表'},{key:'file',val:'文件'}],
+                typeList: [{key: 'table', val: '表格'}, {key: 'report', val: '报表'}, {key: 'file', val: '文件'}],
                 /** 弹出层*/
-                showAddAssetModel:false,
-                addAsset:{
-                    ownerId:'',
-                    name:'',
-                    type:'',
-                    necessary:false,
-                    remark:'',
-                    template:'',        //url地址
-                    ext:'',
-
-                }
-
+                showAddAssetModel: false,
+                addAsset: {
+                    ownerId: '',
+                    name: '',
+                    type: '',
+                    necessary: false,
+                    remark: '',
+                    template: '',        //url地址
+                    ext: '',
+                },
+                assetList: [],
             }
         },
-        computed:{
-            getActiveNode(){
+        computed: {
+            getActiveNode() {
                 return this.$store.state.flowData.nodeActive
             }
         },
-        watch:{
-            getActiveNode(val){
-                let str = this.$store.state.flowData.nodeActiveInfo.assetDesc
-                this.assetDesc = JSON.parse(str)
-                console.log( this.assetDesc)
+        watch: {
+            getActiveNode(val) {
+                console.log(val)
+                let cnt = {
+                    ownerId: val,
+                    offset: 0,
+                    count: 500
+                }
+                this.getAssetDescList(cnt)
             }
         },
         methods: {
-            /** 修改选中节点数据*/
-            setNodeACtiveInfo(assetDesc){
-                this.$store.state.flowData.nodeActiveInfo.assetDesc = JSON.stringify(assetDesc)
-            },
 
-            /** 请求table列表*/
-            getTableSchemas(cnt) {
-                this.$api.getTableSchemas(cnt, (res) => {
-                    if (res.data.rc == this.$util.RC.SUCCESS) {
-                        this.tableList = this.$util.tryParseJson(res.data.c)
-                    } else {
-                        this.tableList = []
-                    }
-                })
-            },
-            /** 选中table*/
-            addTableBtn(item) {
-
-                let _index = -1
-                for (let i = 0; i < this.assetDesc.table.length; i++) {
-                    if (this.assetDesc.table[i].id == item.id) {
-                        _index = i
-                        break
-                    }
+            /** 获取表格或者报表列表*/
+            getAssetList() {
+                let cnt = {
+                    tags: [],
+                    count: 500,
+                    offset: 0
                 }
-                if (_index == -1) {
-                    this.assetDesc.table.push(item)
-                    this.setNodeACtiveInfo(this.assetDesc)
+                if (this.addAsset.type == 'table') {
+                    this.$api.getTableSchemas(cnt, (res) => {
+                        if (res.data.rc == this.$util.RC.SUCCESS) {
+                            this.assetList = this.$util.tryParseJson(res.data.c)
+                        } else {
+                            this.assetList = []
+                        }
+                    })
+
+                } else if (this.addAsset.type == 'report') {
+                    this.$api.getReportSchemaList(cnt, (res) => {
+                        if (res.data.rc == this.$util.RC.SUCCESS) {
+                            this.assetList = this.$util.tryParseJson(res.data.c)
+                        } else {
+                            this.assetList = []
+                        }
+                    })
+
                 } else {
-                    this.$message.error('该资源已经被选中')
+                    this.assetList = []
                 }
-            },
-            /** 删除选中的table*/
-            delTableActiveItem(_index) {
-                this.assetDesc.table.splice(_index, 1)
-                this.setNodeACtiveInfo(this.assetDesc)
             },
 
             /** 新增asset 弹窗显示*/
-            addShowAssetBtn(){
+            addShowAssetBtn() {
                 this.showAddAssetModel = true
             },
             /** 新增asset*/
-            addAssetBtn(){
+            addAssetBtn() {
                 let cnt = JSON.parse(JSON.stringify(this.addAsset))
                 cnt.ownerId = this.$store.state.flowData.nodeActive
-                this.$api.createAssetDesc(cnt,(res)=>{
-                    console.log(res)
+                let obj = {
+                    ownerId: '',
+                    name: '',
+                    type: '',
+                    necessary: false,
+                    remark: '',
+                    template: '',        //url地址
+                    uri: '',
+                }
+                this.addAsset = obj
+                this.$api.createAssetDesc(cnt, (res) => {
+                    if (res.data.rc == this.$util.RC.SUCCESS) {
+                        this.$message.success('操作成功')
+                    } else {
+                        this.$message.error('操作失败')
+                    }
+                    this.showAddAssetModel = false
+                    let cnt1 = {
+                        ownerId: cnt.ownerId,
+                        offset: 0,
+                        count: 500
+                    }
+                    this.getAssetDescList(cnt1)
                 })
 
-            }
+            },
+            /** 查找资源定义列表*/
+            getAssetDescList(cnt) {
+                this.assetDesc = {table: [], report: [], file: []},
+                    this.$api.getAssetDescList(cnt, (res) => {
+                        let arr = []
+                        if (res.data.rc == this.$util.RC.SUCCESS) {
+                            arr = this.$util.tryParseJson(res.data.c)
+                        } else {
+                            arr = []
+                        }
+                        console.log(arr)
+                        for (let i = 0; i < arr.length; i++) {
+                            if (arr[i].type == 'table') {
+                                this.assetDesc.table.push(arr[i])
+                            } else if (arr[i].type == 'report') {
+                                this.assetDesc.report.push(arr[i])
+                            } else if (arr[i].type == 'file') {
+                                this.assetDesc.file.push(arr[i])
+                            }
+                        }
 
+
+                        console.log(this.assetDesc)
+                    })
+            },
+            /**  删除节点资源*/
+            delItemAssetDesc(item){
+                console.log(item.id)
+                let cnt ={ids:[item.id]}
+                console.log(cnt);
+                this.$api.delAssetDesc(cnt,(res)=>{
+                    if(res.data.rc== this.$util.RC.SUCCESS){
+                        let cnt1 = {
+                            ownerId: this.$store.state.flowData.nodeActive,
+                            offset: 0,
+                            count: 500
+                        }
+                        this.getAssetDescList(cnt1)
+                    }else{
+                        this.$message.error('操作失败')
+                    }
+
+                })
+            }
         },
         mounted() {
-            /** 请求table列表*/
+
+            let id = this.$store.state.flowData.nodeActive
             let cnt = {
-                count: 500,
-                offset: 0
+                ownerId: id,
+                offset: 0,
+                count: 500
             }
-            this.getTableSchemas(cnt)
-            let str = this.$store.state.flowData.nodeActiveInfo.assetDesc
-            this.assetDesc = JSON.parse(str)
+            this.getAssetDescList(cnt)
+
+
         }
     }
 </script>
 
 <style scoped lang="scss">
-    .add-resouce{
+    .add-resouce {
         width: auto;
         height: 30px;
         line-height: 30px;
 
         padding: 0 10px;
     }
+
     .search-box {
         width: auto;
         height: 50px;
@@ -296,7 +343,8 @@
     }
 
     .item-list-box {
-        width: auto;
+        width: 90%;
+        margin: 0 auto;
         height: 300px;
         overflow-y: auto;
     }
@@ -339,6 +387,12 @@
     .tag-box {
         margin-top: 5px;
         margin-left: 10px;
+    }
+
+    .tag-item-box {
+        width: 100%;
+        text-align: center;
+        margin-top: 10px;
     }
 
 </style>

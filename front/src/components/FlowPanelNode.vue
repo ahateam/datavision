@@ -92,13 +92,34 @@
             /** 修改节点信息*/
             editNodeBtn(){
                 let nodeActive = this.$store.state.flowData.nodeActiveInfo
-                console.log(nodeActive)
                 let cnt = nodeActive
                 this.$api.editPDActivity(cnt,(res)=>{
-                    console.log(res);
+                   if(res.data.rc == this.$util.RC.SUCCESS){
+                       this.saveNodeBtn()
+                   }else{
+                       this.$message.error('操作失败')
+                   }
+                    this.$router.push('/page')
                 })
-                console.log(this.$store.state.flowData.nodeActiveInfo)
-            }
+
+            },
+            /** 保存显示层样式*/
+            saveNodeBtn(){
+                let visual =this.$commen.getGraphNodes(this.$store.state.flowData.graph.getNodes())
+                let cnt = {
+                    pdId: this.flowId, // Long 流程定义编号
+                    activityVisualList: visual, //
+                    count:visual.length,
+                    offset:0
+                }
+                this.$api.setPDActivityVisualList(cnt,(res)=>{
+                    if(res.data.rc == this.$util.RC.SUCCESS){
+                        this.$message.success('操作成功')
+                    }else{
+                        this.$message.error('操作失败')
+                    }
+                })
+            },
 
 
         },

@@ -52,6 +52,13 @@ commen.getGraphNodes = function (graphNodes) {
     return arr
 }
 
+// /** @getACtionsToEdgeList 根据所有节点的aciton数据转化为canvas线条
+//  *
+//  * */
+// commen.getACtionsToEdgeList=function (actions) {
+//
+// }
+
 
 
 export default {

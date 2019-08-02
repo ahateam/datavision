@@ -87,7 +87,6 @@
                     actions: [], // JSONArray 行为动作
                     assetDesc:{table:[],report:[],file:[]},
                 };
-                console.log( typeof  cnt.receivers)
                 this.$api.createPDActivity(cnt,(res)=>{
                     if(res.data.rc == this.$util.RC.SUCCESS){
                         this.newNodeId = res.data.c
@@ -101,24 +100,17 @@
             /* 新增设置节点样式*/
             addNodeStyle(newNodeId){
                 let visual = JSON.parse(JSON.stringify(this.nodeData))
-
                 visual.id = newNodeId
                 let cnt = {
                     activityId: newNodeId, // Long 流程定义编号
                     visual: visual,
                 }
                 this.$api.setPDActivityVisual(cnt,(res)=>{
-
                     if(res.data.rc== this.$util.RC.SUCCESS){
-
-
-
-
-
                         this.$store.state.flowData.graph.addItem('node',visual)
                         this.nodeList = this.$commen.getGraphNodes(this.$store.state.flowData.graph.getNodes())
+                        this.$store.state.flowStyle.nodeList = this.nodeList
                         this.getNodeInfo(newNodeId)
-
                     }else{
                         this.$message.error('新增节点失败')
                         this.delPDActivity()
@@ -149,14 +141,12 @@
                     offset:0
                 }
                 this.$api.setPDActivityVisualList(cnt,(res)=>{
-
                     if(res.data.rc == this.$util.RC.SUCCESS){
                         this.$message.success('操作成功')
                     }else{
                         this.$message.error('操作失败')
                     }
                 })
-
             },
             checkNodeBtn(item){
                 this.getNodeInfo(item.id)
@@ -197,7 +187,6 @@
                             activityId: item.id, // Long 流程节点编号
                         }
                         this.$api.delPDActivity(cnt,(res)=>{
-
                             if(res.data.rc == this.$util.RC.SUCCESS){
                                 this.$message.success('删除成功')
                             }else{
@@ -216,7 +205,7 @@
 
         },
         mounted(){
-            this.nodeList=this.$store.state.nodeList
+            this.nodeList=this.$store.state.flowStyle.nodeList
             this.activeNode = this.$store.state.flowData.nodeActive
         }
     }

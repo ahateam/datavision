@@ -8,7 +8,11 @@ export default new Vuex.Store({
       /* 导航栏*/
       navDefaultActive:'0',
       /*流程图相关*/
-      nodeList:[],
+      /*流程图样式*/
+      flowStyle:{
+          nodeList:[],
+          edgeList:[],      //流程图 所有的actions 对应的线条
+      },
       flowData:{
         graph:'',
         /*选中节点*/

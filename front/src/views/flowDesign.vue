@@ -4,7 +4,7 @@
             <el-header class="header-box">Header</el-header>
             <el-container style="height: 100%;">
                 <el-aside width="200px" class="item-box" >
-                    <node-list :flowId="flowId" @changeNodeList="changeNodeList"></node-list>
+                    <node-list :flowId="flowId"></node-list>
                 </el-aside>
                 <el-container>
                     <el-main class="main-box">
@@ -59,6 +59,7 @@
             return {
                 flowId: '',
                 nodeList:[],
+                edgeList:[],
                 isLoadDom:false,
 
             }
@@ -67,23 +68,33 @@
             /** 获取样式节点信息*/
             getPDActivityList(cnt){
                 this.nodeList = []
+                this.edgeList = []
                 this.$api.getPDActivityList(cnt, (res) => {
-
-
                     if(res.data.rc == this.$util.RC.SUCCESS){
                         let arr = this.$util.tryParseJson(res.data.c)
+                        console.log(arr)
                         for(let i=0;i<arr.length;i++){
                             this.nodeList.push(arr[i].visual)
+                            /*更新所有的线条*/
+                            let actions =JSON.parse( arr[i].actions)
+                            for(let j =0 ;j<actions.length;j++){
+                                this.edgeList.push(actions[j])
+                            }
+                            this.$store.state.flowStyle.edgeList = this.edgeList
                         }
                     }else{
                         this.nodeList = []
                     }
-                    console.log(this.nodeList)
-                    this.$store.state.nodeList = this.nodeList
+                    this.$store.state.flowStyle.nodeList = this.nodeList
                     this.isLoadDom = true
                 })
+
             },
+
+
             /** 更新节点样式列表*/
+
+
             changeNodeList(isChangeNode){
                 if(isChangeNode){
                     let cnt = {

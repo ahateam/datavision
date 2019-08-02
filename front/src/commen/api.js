@@ -55,21 +55,33 @@ api.delPDActivity= function (cnt,callback) {
 }
 
 /** 资源相关*/
-//创建资源
-
+//创建节点所需资源
 api.createAssetDesc= function (cnt,callback) {
     util.call(baseUrl+'/flow/createAssetDesc', cnt, callback)
 }
+//获取节点资源列表
+api.getAssetDescList= function (cnt,callback) {
+    util.call(baseUrl+'/flow/getAssetDescList', cnt, callback)
+}
+//删除节点所需资源
+api.delAssetDesc= function (cnt,callback) {
+    util.call(baseUrl+'/flow/delAssetDesc', cnt, callback)
+}
 
-//获取资源table列表
-api.getTableSchemas= function (cnt,callback) {
+//获取根据标签获取表格列表
+api.getTableSchemas = function (cnt,callback) {
     util.call(baseUrl+'/table/getTableSchemas', cnt, callback)
 }
-//修改节点资源/权限/行为信息
+//获取根据标签获取报表列表
+api.getReportSchemaList= function (cnt,callback) {
+    util.call(baseUrl+'/report/getReportSchemaList', cnt, callback)
+}
 
+//修改节点资源/权限/行为信息
 api.editPDActivity= function (cnt,callback) {
     util.call(baseUrl+'/flow/editPDActivity', cnt, callback)
 }
+
 
 /** 权限相关*/
 //获取部门列表
