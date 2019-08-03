@@ -105,12 +105,18 @@
         },
         watch: {
             getActiveNode(val) {
+
                 this.source = val
+
                 let str = this.$store.state.flowData.nodeActiveInfo.actions
+
+                console.log(this.$store.state.flowData.nodeActiveInfo)
                 this.actions = JSON.parse(str)
+                console.log('2333444')
                 this.type =''
                 this.target =''
                 this.getNodeList()
+
             }
         },
         methods: {
@@ -155,7 +161,9 @@
                     this.actions.push(obj)
                     this.setNodeACtiveInfo(this.actions)
                 }
-            }
+            },
+
+
         },
         mounted() {
             this.typeList = this.$constData.actionType

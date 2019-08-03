@@ -64,7 +64,25 @@
                 this.nodeData.edges = edgeList
                 graph.changeData(this.nodeData)
 
-            }
+            },
+            /** 获取节点的详细信息*/
+            getNodeInfo(nodeId){
+                let flowId=localStorage.getItem('flowId')
+                let cnt = {
+                    pdid: flowId, // Long 流程定义编号
+                    activityid: nodeId, // Long 流程节点编号
+                }
+                this.$api.getPDActivityById(cnt,(res)=>{
+                    if(res.data.rc == this.$util.RC.SUCCESS){
+                        this.nodeInfo = this.$util.tryParseJson(res.data.c)
+                    }else{
+                        this.nodeInfo = {}
+                    }
+                    this.$store.state.flowData.nodeActiveInfo = this.nodeInfo
+                    this.$store.state.flowData.nodeActive = nodeId
+                })
+            },
+
         },
         mounted() {
             let _this = this
@@ -88,60 +106,6 @@
                     }
                 }
             }, 'rect');
-            // G6.registerBehavior('click-add-edge', {
-            // 	getEvents() {
-            // 		return {
-            // 			'node:click': 'onClick',
-            // 			mousemove: 'onMousemove',
-            // 			'edge:click': 'onEdgeClick' // 点击空白处，取消边
-            // 		};
-            // 	},
-            // 	onClick(ev) {
-            // 		const node = ev.item;
-            // 		const graph = _this.$store.state.flowData.graph
-            // 		const point = {
-            // 			x: ev.x,
-            // 			y: ev.y
-            // 		};
-            // 		const model = node.getModel();
-            // 		if (this.addingEdge && this.edge) {
-            // 			graph.updateItem(this.edge, {
-            // 				target: model.id
-            // 			});
-            //
-            // 			this.edge = null;
-            // 			this.addingEdge = false;
-            // 		} else {
-            // 			this.edge = graph.addItem('edge', {
-            // 				source: model.id,
-            // 				target: point
-            // 			});
-            // 			this.addingEdge = true;
-            // 		}
-            //
-            //
-            // 	},
-            // 	onMousemove(ev) {
-            // 		const point = {
-            // 			x: ev.x,
-            // 			y: ev.y
-            // 		};
-            // 		if (this.addingEdge && this.edge) {
-            // 			_this.$store.state.flowData.graph.updateItem(this.edge, {
-            // 				target: point
-            // 			});
-            // 		}
-            // 	},
-            // 	onEdgeClick(ev) {
-            // 		const currentEdge = ev.item
-            // 		// 拖拽过程中，点击会点击到新增的边上
-            // 		if (this.addingEdge && this.edge == currentEdge) {
-            // 			_this.$store.state.flowData.graph.removeItem(this.edge)
-            // 			this.edge = null
-            // 			this.addingEdge = false
-            // 		}
-            // 	}
-            // })
             G6.registerBehavior('activate-node', {
                 getDefaultCfg() {
                     return {
@@ -185,13 +149,14 @@
                     // this 上即可取到配置，如果不允许多个active，先取消其他节点的active状态
                     this.removeNodesState()
                     // 置点击的节点状态为active
-                    _this.$store.state.flowData.nodeActive = item._cfg.id
+                    _this.getNodeInfo(item._cfg.id)
                     graph.setItemState(item, 'active', true)
                 },
                 onCanvasClick(e) {
                     // shouldUpdate可以由用户复写，返回 true 时取消所有节点的active状态
                     if (this.shouldUpdate(e)) {
                         _this.$store.state.flowData.nodeActive = '0'
+                        _this.$store.state.flowData.nodeActiveInfo = {}
                         this.removeNodesState()
                     }
                 },

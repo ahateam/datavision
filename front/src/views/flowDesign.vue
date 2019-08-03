@@ -15,7 +15,8 @@
                             <div class="tab-box">
                                 <flow-panel-node
                                         v-if="this.$store.state.flowData.nodeActive !='0'"
-                                        :flowId="flowId">
+                                        :flowId="flowId"
+                                        @resetDom="resetDom">
                                 </flow-panel-node>
                                 <flow-public-panel-node
                                         v-else
@@ -64,29 +65,46 @@
 
             }
         },
+        computed:{
+            getNodeActive(){
+                return this.$store.state.flowData.nodeActive
+            }
+        },
+        watch:{
+            getNodeActive(val){
+                this.changeNodeList()
+            }
+        },
         methods: {
+            resetDom(val){
+                this.$router.push('/page')
+            },
             /** 获取样式节点信息*/
             getPDActivityList(cnt){
-                this.nodeList = []
-                this.edgeList = []
+                let nodeList = []
+                let edgeList = []
                 this.$api.getPDActivityList(cnt, (res) => {
                     if(res.data.rc == this.$util.RC.SUCCESS){
                         let arr = this.$util.tryParseJson(res.data.c)
                         console.log(arr)
                         for(let i=0;i<arr.length;i++){
-                            this.nodeList.push(arr[i].visual)
+                            nodeList.push(arr[i].visual)
                             /*更新所有的线条*/
                             let actions =JSON.parse( arr[i].actions)
                             for(let j =0 ;j<actions.length;j++){
-                                this.edgeList.push(actions[j])
+                                edgeList.push(actions[j])
                             }
-                            this.$store.state.flowStyle.edgeList = this.edgeList
+
                         }
                     }else{
-                        this.nodeList = []
+                        nodeList = []
                     }
-                    this.$store.state.flowStyle.nodeList = this.nodeList
+
+                    this.$store.state.flowStyle.edgeList = edgeList
+                    this.$store.state.flowStyle.nodeList = nodeList
                     this.isLoadDom = true
+
+
                 })
 
             },
@@ -95,19 +113,19 @@
             /** 更新节点样式列表*/
 
 
-            changeNodeList(isChangeNode){
-                if(isChangeNode){
+            changeNodeList(){
                     let cnt = {
                         pdId: this.flowId,
                         count:500,
                         offset:0
                     }
                     this.getPDActivityList(cnt)
-                }
             }
         },
         mounted() {
             this.flowId = localStorage.getItem('flowId')
+            this.$store.state.flowData.nodeActive = '0'
+            this.$store.state.flowData.nodeActiveInfo ={}
             if(this.flowId == undefined || this.flowId == ''){
                 this.$message.error('请先选择一个流程')
                 this.$router.push('/processList')

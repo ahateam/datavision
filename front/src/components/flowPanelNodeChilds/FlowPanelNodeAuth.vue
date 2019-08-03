@@ -111,8 +111,10 @@
         },
         watch:{
             getActiveNode(val){
+
                 let str = this.$store.state.flowData.nodeActiveInfo.receivers
                 this.receivers = JSON.parse(str)
+                console.log('111')
                 console.log( this.receivers)
             }
         },

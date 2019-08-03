@@ -99,9 +99,8 @@
                    }else{
                        this.$message.error('操作失败')
                    }
-                    this.$router.push('/page')
+                   this.$emit('resetDom',true)
                 })
-
             },
             /** 保存显示层样式*/
             saveNodeBtn(){
@@ -112,8 +111,11 @@
                     count:visual.length,
                     offset:0
                 }
+
                 this.$api.setPDActivityVisualList(cnt,(res)=>{
                     if(res.data.rc == this.$util.RC.SUCCESS){
+
+
                         this.$message.success('操作成功')
                     }else{
                         this.$message.error('操作失败')

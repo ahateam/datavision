@@ -39,9 +39,12 @@
                 if (val == '0') {
                     this.isNodeItem = false
                 } else {
+
                     this.isNodeItem = true
-                    this.nodeList = this.$store.state.nodeList
+                    this.nodeList = this.$store.state.flowStyle.nodeList
                     this.newGraphId = val
+
+
                     let item = this.$store.state.flowData.graph.findById(this.newGraphId)._cfg.model
                     this.newGraphLabel = item.label
                 }
@@ -82,8 +85,9 @@
             } else {
                 this.isNodeItem = true
                 this.newGraphId = val
-                let item = this.$store.state.flowData.graph.findById(this.newGraphId)._cfg.model
-                this.newGraphLabel = item.label
+
+                // let item = this.$store.state.flowData.graph.findById(this.newGraphId)._cfg.model
+                this.newGraphLabel = '222'
             }
         }
     }

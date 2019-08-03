@@ -13,6 +13,7 @@
                 <div :class="activeNode==item.id?'item-box item-box-active': 'item-box' " >
                    <div class="item-label">
                        {{item.label}}
+
                    </div>
                     <span  class="del-box"
                            v-if="delBtnShow == item.id"
@@ -151,6 +152,52 @@
             checkNodeBtn(item){
                 this.getNodeInfo(item.id)
             },
+            /** 编辑节点信息*/
+            editPDActivity(node,actions){
+                console.log(node)
+                console.log(actions)
+                node.actions = actions
+                this.$api.editPDActivity(node,(res)=>{
+                    if(res.data.rc == this.$util.RC.SUCCESS){
+                        // console.log(res.data.c)
+                        console.log('111')
+                    }
+                })
+
+            },
+
+            /** 删除节点之后 删除每个节点受影响的action*/
+            setNodeAction(delNodeId){
+              let cnt = {
+                  pdId: localStorage.getItem('flowId'), // Long 流程定义编号
+                  count: 500, // Integer
+                  offset: 0, // Integer
+              }
+              this.$api.getPDActivityList(cnt,(res)=>{
+                  let nodeList = []
+                  if(res.data.rc == this.$util.RC.SUCCESS){
+                      nodeList = this.$util.tryParseJson(res.data.c)
+                  }
+                  //循环出每一个节点的actions
+                  for(let i=0;i<nodeList.length;i++){
+                      let key = -1
+                      let newActions = []
+                      let actions  = JSON.parse(nodeList[i].actions)
+                      for( let j=0;j<actions.length;j++){
+                          if(actions[j].target == delNodeId){
+                              key = j
+                          }else{
+                              newActions.push(actions[j])
+                          }
+                      }
+
+                      if(key != -1){
+                          this.editPDActivity(nodeList[i],newActions)
+                      }
+
+                  }
+              })
+            },
 
             /** 获取节点的详细信息*/
             getNodeInfo(nodeId){
@@ -171,7 +218,7 @@
 
             /** 点击删除按钮删除节点*/
             delNodeItemBtn(index,item){
-
+                console.log(index,item)
                 let visual =this.$commen.getGraphNodes(this.$store.state.flowData.graph.getNodes())
                 let cnt = {
                     pdId: this.flowId, // Long 流程定义编号
@@ -179,16 +226,19 @@
                     count:visual.length,
                     offset:0
                 }
+                //保存所有的节点样式
                 this.$api.setPDActivityVisualList(cnt,(res)=>{
-
                     if(res.data.rc == this.$util.RC.SUCCESS){
-                        let cnt = {
+                        //删除节点
+                        let cnt1 = {
                             pdId: this.flowId, // Long 流程定义编号
                             activityId: item.id, // Long 流程节点编号
                         }
-                        this.$api.delPDActivity(cnt,(res)=>{
+                        this.$api.delPDActivity(cnt1,(res)=>{
                             if(res.data.rc == this.$util.RC.SUCCESS){
                                 this.$message.success('删除成功')
+                                this.setNodeAction(item.id)
+
                             }else{
                                 this.$message.error('删除失败')
                             }
@@ -206,6 +256,7 @@
         },
         mounted(){
             this.nodeList=this.$store.state.flowStyle.nodeList
+
             this.activeNode = this.$store.state.flowData.nodeActive
         }
     }
