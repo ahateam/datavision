@@ -13,7 +13,6 @@
                 <div :class="activeNode==item.id?'item-box item-box-active': 'item-box' " >
                    <div class="item-label">
                        {{item.label}}
-
                    </div>
                     <span  class="del-box"
                            v-if="delBtnShow == item.id"

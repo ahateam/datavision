@@ -9,6 +9,8 @@ const formDesign =()=>import('./views/formDesign')
 const flowDesign =()=>import('./views/flowDesign')
 const g6Editor =()=>import('./views/g6Editor')
 const page =()=>import('./views/page')
+const tableDesign =()=> import('./views/tableDesign')
+
 /** page页面*/
 const pageHome =()=>import('./views/page/home/pageHome')
 const processList =()=> import('./views/page/process/processList')
@@ -55,6 +57,12 @@ export default new Router({
             name:'page',
             component:page
         },
+        {
+            path:'/tableDesign',
+            name:'tableDesign',
+            component:tableDesign
+        },
+
 
         /** 页面*/
         {

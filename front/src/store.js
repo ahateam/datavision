@@ -18,6 +18,12 @@ export default new Vuex.Store({
         /*选中节点*/
         nodeActive:'0',
         nodeActiveInfo:{}
+      },
+      /** 表格tableEditor 相关*/
+      tableEditor:{
+            tableActive:'-1',   //-1 默认打开  0新增   val：选中的table的下标
+            tableData:[],       //表格数组
+            tableSetRow:{},     //选中编辑赋值
       }
   },
   mutations: {

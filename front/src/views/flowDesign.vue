@@ -3,9 +3,11 @@
         <el-container style="height: 100%" v-if="isLoadDom">
             <el-header class="header-box">Header</el-header>
             <el-container style="height: 100%;">
+
                 <el-aside width="200px" class="item-box" >
                     <node-list :flowId="flowId"></node-list>
                 </el-aside>
+
                 <el-container>
                     <el-main class="main-box">
                         <div class="center-box" >
@@ -13,15 +15,16 @@
                         </div>
                         <div class="info-box">
                             <div class="tab-box">
+
                                 <flow-panel-node
                                         v-if="this.$store.state.flowData.nodeActive !='0'"
                                         :flowId="flowId"
                                         @resetDom="resetDom">
                                 </flow-panel-node>
+
                                 <flow-public-panel-node
                                         v-else
                                         :flowId="flowId">
-
                                 </flow-public-panel-node>
 
                             </div>
@@ -36,16 +39,15 @@
                 </el-container>
             </el-container>
         </el-container>
-
     </div>
 </template>
 
 <script>
-    import FlowEditor from '@/components/FlowEditor'
-    import FlowPanelNode from '@/components/FlowPanelNode'
-    import FlowPanelNodeValue from '@/components/FlowPanelNodeValue'
-    import NodeList from '@/components/NodeList'
-    import FlowPublicPanelNode from '@/components/FlowPublicPanelNode'
+    import FlowEditor from '@/components/flowEditor/FlowEditor'
+    import FlowPanelNode from '@/components/flowEditor/FlowPanelNode'
+    import FlowPanelNodeValue from '@/components/flowEditor/FlowPanelNodeValue'
+    import NodeList from '@/components/flowEditor/NodeList'
+    import FlowPublicPanelNode from '@/components/flowEditor/FlowPublicPanelNode'
 
     export default {
         name: "flowDesign",

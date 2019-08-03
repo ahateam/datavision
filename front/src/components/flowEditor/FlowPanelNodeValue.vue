@@ -68,9 +68,6 @@
                     }
                 }
                 this.$store.state.flowStyle.nodeList =this.nodeList
-
-
-
             },
             // delItem() {
             //     // const item = this.$store.state.flowData.graph.findById(this.newGraphId)
