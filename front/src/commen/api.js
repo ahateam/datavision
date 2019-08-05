@@ -84,8 +84,14 @@ api.getSysTableTags= function (cnt,callback) {
 api.editPDActivity= function (cnt,callback) {
     util.call(baseUrl+'/flow/editPDActivity', cnt, callback)
 }
-
-
+//删除table定义
+api.delTableSchema= function (cnt,callback) {
+    util.call(baseUrl+'/table/delTableSchema', cnt, callback)
+}
+//修改table定义
+api.editTableSchema= function (cnt,callback) {
+    util.call(baseUrl+'/table/editTableSchema', cnt, callback)
+}
 /** 权限相关*/
 //获取部门列表
 api.getDepartmentList= function (cnt,callback) {

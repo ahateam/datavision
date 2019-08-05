@@ -48,6 +48,9 @@
         </div>
         <div class="form-table-btn">
             <el-button type="primary" size="small" @click="saveBtn" style="width: 20%">提交数据配置</el-button>
+            <el-button type="danger" size="small"
+                       v-if="tableActive != '-1'"
+                       @click="delBtn" style="width: 20%;margin-left: 20px">删除表格</el-button>
         </div>
     </div>
 </template>
@@ -64,6 +67,7 @@
                 alias:'',
                 type:1,
                 tags:[],
+                tableActive:'-1',
                 dataTypeList:this.$constData.dataTypeList
             }
         },
@@ -74,6 +78,7 @@
             getTableActive(){
                 return this.$store.state.tableEditor.tableActive
             },
+
         },
         watch:{
 
@@ -89,11 +94,13 @@
                     this.tableData = this.$store.state.tableEditor.tableActiveArr.columns
                     this.alias = this.$store.state.tableEditor.tableActiveArr.alias
                     this.tags = this.$store.state.tableEditor.tableActiveArr.tags
-                    console.log(this.$store.state.tableEditor.tableActiveArr);
                 }
+                this.tableActive = val
                 this.$store.state.tableEditor.changeIndex = '-1'
                 this.$store.state.tableEditor.tableData = this.tableData
-            }
+            },
+
+
         },
 
         methods:{
@@ -134,28 +141,64 @@
                 console.log(_index)
             },
 
-
+            /** 保存数据*/
             saveBtn(){
-
-                let cnt = {
-                    tags:this.tags,
-                    alias:this.alias,
-                    type:this.type,
-                    columns:this.$store.state.tableEditor.tableData
+                //新增table定义数据
+                if(this.tableActive == '-1'){
+                    let cnt = {
+                        tags:this.tags,
+                        alias:this.alias,
+                        type:this.type,
+                        columns:this.$store.state.tableEditor.tableData
+                    }
+                    this.$api.createTableSchema(cnt,(res)=>{
+                        if(res.data.rc == this.$util.RC.SUCCESS){
+                            this.$message.success('操作成功')
+                            this.$store.state.tableEditor.tableData = []
+                            this.$store.state.tableEditor.tableActive = '-1'
+                            this.$store.state.tableEditor.changeIndex = '-1'
+                            this.$store.state.tableEditor.tableSetRow = {}
+                            this.$router.push('/page')
+                        }else{
+                            this.$message.error('操作失败')
+                        }
+                    })
+                }else {         //编辑table定义接口
+                    console.log(this.tableActive)
+                    let cnt = {
+                        tags:this.tags,
+                        alias:this.alias,
+                        id:this.tableActive,
+                        columns:this.$store.state.tableEditor.tableData
+                    }
+                    this.$api.editTableSchema(cnt,(res)=>{
+                        if(res.data.rc == this.$util.RC.SUCCESS){
+                            this.$message.success('操作成功')
+                            this.$store.state.tableEditor.tableData = []
+                            this.$store.state.tableEditor.tableActive = '-1'
+                            this.$store.state.tableEditor.changeIndex = '-1'
+                            this.$store.state.tableEditor.tableSetRow = {}
+                            this.$router.push('/page')
+                        }else{
+                            this.$message.error('操作失败')
+                        }
+                    })
                 }
-                this.$api.createTableSchema(cnt,(res)=>{
+            },
+            /** 删除数据*/
+            delBtn(){
+                console.log('111')
+                let cnt = {
+                    id:this.tableActive
+                }
+                this.$api.delTableSchema(cnt,(res)=>{
                     if(res.data.rc == this.$util.RC.SUCCESS){
                         this.$message.success('操作成功')
                     }else{
                         this.$message.error('操作失败')
                     }
                 })
-                this.$store.state.tableEditor.tableData = []
-                this.$store.state.tableEditor.tableActive = '-1'
-                this.$store.state.tableEditor.changeIndex = '-1'
-                this.$store.state.tableEditor.tableSetRow = {}
                 this.$router.push('/page')
-
             }
 
         },
@@ -208,7 +251,8 @@
 
     .form-table-btn{
         text-align: center;
-        margin-top: 20px;
+        margin-top: 50px;
+
     }
 
 </style>

@@ -1,11 +1,17 @@
 <template>
     <div>
         <div class="table-list">
-            <div :class="tableActive == index?'list-item list-item-active':'list-item '"
+            <div :class="tableActive == item.id?'list-item list-item-active':'list-item '"
                  v-for="(item,index) in tableList"
                  :key="index"
                  @click="checkTableBtn(item,index)">
-                {{item.alias}}
+                <div>
+                    {{item.alias}}
+                </div>
+                <!--<div class="del-btn-icon">-->
+                    <!--<i class="iconfont icon-jiufuqianbaoicon08"></i>-->
+                <!--</div>-->
+
             </div>
         </div>
         <div class="btn">
@@ -39,7 +45,7 @@
         },
         methods:{
             checkTableBtn(item,_index){
-                this.tableActive = _index
+                this.tableActive = item.id
                 this.$store.state.tableEditor.tableActive =  this.tableActive
                 this.$store.state.tableEditor.tableActiveArr = item
                 console.log( this.$store.state.tableEditor.tableActiveArr)
@@ -58,9 +64,20 @@
 </script>
 
 <style scoped lang="scss">
+
     .table-list{
         width: 100%;
         margin: 0 auto;
+        position: relative;
+    }
+    .del-btn-icon{
+        width: 20px;
+        height: 20px;
+        position:absolute;
+        right: 10px;
+        color: #f60;
+        cursor: pointer;
+
     }
     .list-item{
         width: auto;
