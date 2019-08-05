@@ -2,14 +2,14 @@
     <div style="height: 100%;">
         <el-container style="height: 100%;">
             <el-header style="background: bisque">表格设计器</el-header>
-            <el-container>
-                <el-aside width="200px" style="background: #fff;border-right: 1px solid #e8e8e8" >
-                    <table-list></table-list>
+            <el-container >
+                <el-aside  width="200px" style="background: #fff;border-right: 1px solid #e8e8e8" >
+                    <table-list :tableList="tableList"  v-if="isLoading"></table-list>
                 </el-aside>
                 <el-container>
                     <el-main>
                         <div class="center-box" :style="centerBoxStyle">
-                            <table-content></table-content>
+                            <table-content :tagList="tagList"></table-content>
                         </div>
                         <div class="menu-box"  ref="menuBox">
                             <table-panel></table-panel>
@@ -41,6 +41,10 @@
                     width: '100%',
                     height: '0px'
                 },
+
+                tableList:[],
+                isLoading:false,
+                tagList:[],
             }
         },
         components:{
@@ -54,7 +58,32 @@
         mounted() {
 
             this.menuForm.height = this.$refs.menuBox.offsetHeight - 30 + 'px'
+            let cnt={
+                tags: [], // JSONArray <选填> 标签列表JSON列表，可以为空，即返回所有
+                count: 500, // Integer
+                offset: 0, // Integer
+            }
+            this.$api. getTableSchemaByTags(cnt,(res)=>{
+                if(res.data.rc == this.$util.RC.SUCCESS){
+                    this.tableList = this.$util.tryParseJson(res.data.c)
 
+                }else{
+                    this.tableList = []
+                }
+
+                this.$api.getSysTableTags({},(res)=>{
+                    if(res.data.rc == this.$util.RC.SUCCESS){
+                        this.tagList = this.$util.tryParseJson(res.data.c)
+                    }else{
+                        this.tagList = []
+                    }
+                    console.log( this.tagList)
+                    console.log(this.tableList)
+                    this.isLoading = true
+                })
+
+
+            })
         }
     }
 </script>
@@ -75,79 +104,8 @@
 
 
 
-    /** 配置器相关*/
-    .menu-title {
-        width: auto;
-        height: 30px;
-        color: #666;
-        font-size: 16px;
-        font-weight: 600;
-        padding: 5px;
-        line-height: 30px;
-
-        border-bottom: 1px solid #b3d8ff
-    }
-
-    .menu-icon-btn {
-        width: 100%;
-        height: 40px;
-        line-height: 40px;
-    }
-
-    .menu-item {
-        width: 100%;
-    }
-
-    .menu-form {
-        overflow-y: auto;
-    }
-    .add-btn-box{
-        margin-top: 30px;
-        width: 100%;
-        height: 40px;
-        line-height: 40px;
-        text-align: center;
-    }
-
-    .form-table-btn{
-        width: auto;
-        height: 40px;
-        margin-top: 40px;
-        line-height: 40px;
-        text-align: center;
-
-    }
 
 
-    /** 计算公式弹出窗*/
-    .data-list-box{
-        width: 100%;
-    }
-    .tag-sign{
-        font-size: 16px;
-        font-weight: 600;
-        margin:10px 0 0 10px;
-        cursor:pointer;
-    }
-    .tag-sign:hover{
-        background: #f56c6c;
-        color: #fff;
-    }
-    .tag-sign:active{
-        background:#fef0f0;
-        color: #fff;
-    }
-    .tag-item{
-        margin: 10px 0 0 10px;
-        cursor:pointer;
-    }
-    .tag-item:hover{
-        background: #409EFF;
-        color: #fff;
 
-    }
-    .tag-item:active{
-        background: #d9ecff;
-        color: #fff;
-    }
+
 </style>

@@ -88,15 +88,13 @@
                 this.$api.getPDActivityList(cnt, (res) => {
                     if(res.data.rc == this.$util.RC.SUCCESS){
                         let arr = this.$util.tryParseJson(res.data.c)
-                        console.log(arr)
                         for(let i=0;i<arr.length;i++){
                             nodeList.push(arr[i].visual)
                             /*更新所有的线条*/
                             let actions =JSON.parse( arr[i].actions)
                             for(let j =0 ;j<actions.length;j++){
-                                edgeList.push(actions[j])
+                                edgeList.push(actions[j].visual)
                             }
-
                         }
                     }else{
                         nodeList = []

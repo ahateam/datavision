@@ -69,14 +69,17 @@ api.delAssetDesc= function (cnt,callback) {
 }
 
 //获取根据标签获取表格列表
-api.getTableSchemas = function (cnt,callback) {
-    util.call(baseUrl+'/table/getTableSchemas', cnt, callback)
+api.getTableSchemaByTags = function (cnt,callback) {
+    util.call(baseUrl+'/table/getTableSchemaByTags', cnt, callback)
 }
 //获取根据标签获取报表列表
 api.getReportSchemaList= function (cnt,callback) {
     util.call(baseUrl+'/report/getReportSchemaList', cnt, callback)
 }
-
+//获取标签列表
+api.getSysTableTags= function (cnt,callback) {
+    util.call(baseUrl+'/table/getSysTableTags', cnt, callback)
+}
 //修改节点资源/权限/行为信息
 api.editPDActivity= function (cnt,callback) {
     util.call(baseUrl+'/flow/editPDActivity', cnt, callback)
@@ -100,8 +103,10 @@ api.getUserList= function (cnt,callback) {
 
 
 /** 表格设计器*/
-
-
+//创建表格
+api.createTableSchema= function (cnt,callback) {
+    util.call(baseUrl+'/table/createTableSchema', cnt, callback)
+}
 
 
 

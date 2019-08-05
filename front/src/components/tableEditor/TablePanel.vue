@@ -1,5 +1,6 @@
 <template>
     <div>
+
         <div class="menu-title">
             <span style="margin-left: 20px">字段配置</span>
             <el-button type="primary" icon="el-icon-plus" size="mini"
@@ -7,6 +8,7 @@
                        @click="addFiledBtn">新增字段
             </el-button>
         </div>
+
         <div :style="menuForm" class="menu-form">
             <el-form label-width="100px" style="width: 90%;margin: 0 auto;margin-top: 20px">
                 <el-form-item label="字段名">
@@ -120,21 +122,17 @@
                                                 </el-date-picker>
                                          </el-form-item>
                                     </span>
-                <span v-if="data.dataType == 'money'">
-                                        <el-form-item label="金额单位">
-                                            <el-input v-model="data.dataProp.dataUnit" size="mini"
-                                                      placeholder="请输入金额单位（元/万元）"></el-input>
+                                    <span>
+                                        <el-form-item label="单位">
+                                            <el-input v-model="data.dataUnit" size="mini"
+                                                      placeholder="请输入字段单位"></el-input>
                                          </el-form-item>
                                     </span>
-
-                <el-form-item label="备注信息">
-                    <el-input type="textarea" v-model="data.remark" placeholder="请输入备注信息" :rows="3"></el-input>
-                </el-form-item>
 
 
             </el-form>
             <div class="add-btn-box">
-                <el-button type="success" @click="completeBtn" size="small" style="width: 90%">完成数据</el-button>
+                <el-button type="success" @click="completeBtn" size="small" style="width: 90%">完成字段配置</el-button>
             </div>
         </div>
 
@@ -163,13 +161,9 @@
                         </el-tag>
                     </el-form-item>
                     <el-form-item label="生成计算公式" label-width="120px" >
-                        <!--<el-tag type="success" size="small" style="margin: 10px 0 0 10px;cursor: pointer;" >-->
-                        <!--1111-->
-                        <!--</el-tag>-->
-                        <!--+-->
                         <span>
                                 {{formulaData}}
-                            </span>
+                        </span>
 
                     </el-form-item>
                 </el-form>
@@ -191,7 +185,6 @@
                 tableData:[],
                 menuForm: {
                     width: '100%',
-                    height: '0px'
                 },
                 data:{},
                 newData: {
@@ -200,17 +193,15 @@
                     necessary:'0',        //是否必填 0：必填 1：非必填
                     columnType: 'data',   //数据列还是计算列
                     dataType: '',          //数据类型
-                    remark:'',            //备注
                     dataUnit:'',            //单位
                     computeFormula:'',            //公式
-                    selections:'',              //选项
+                    selections:[],              //选项
                     dataProp: {
                         length: '',      //数据位数
                         decimals: '',    //小数位数
                         intRules: '',    //取整规则
                         start: '',       //开始日期
                         end: '',         //截止日期
-                        dataUnit:'',      //金额单位
                     },
                 },
                 dataTypeList:this.$constData.dataTypeList,
@@ -229,28 +220,34 @@
             getTableData(){
                 return this.$store.state.tableEditor.tableData
             },
-            getTableActive(){
-                return this.$store.state.tableEditor.tableActive
+            getChangeIndex(){
+                return this.$store.state.tableEditor.changeIndex
             }
         },
         watch:{
             getTableData(val){
-                this.tableData = val
+
+                this.tableData = JSON.parse(JSON.stringify(val))
+                console.log(this.tableData)
             },
 
-            getTableActive(val){
+            getChangeIndex(val){
                 this.changeIndex = val
-                if(this.changeIndex == '-1' || this.changeIndex == '0'){
-                    this.data =this.newData
+                if(this.changeIndex == '-1'){
+                    this.data = JSON.parse(JSON.stringify(this.newData))
                 }else{
-                    this.data = this.$store.state.tableEditor.tableSetRow
+                    this.data =this.$store.state.tableEditor.tableData[this.changeIndex]
                 }
+
+                console.log(this.changeIndex)
+                console.log(this.data)
             }
         },
         methods:{
             /** 新增字段*/
             addFiledBtn(){
-
+                this.data = JSON.parse(JSON.stringify(this.newData))
+                this.changeIndex = '-1'
             },
 
             /** 更改数据类型改变默认值*/
@@ -260,9 +257,8 @@
                 this.data.dataProp.intRules = ''
                 this.data.dataProp.start = ''
                 this.data.dataProp.end = ''
-                this.data.dataProp.dataUnit = ''
+                this.data.dataUnit = ''
                 this.data.columnType = 'data'
-                this.data.formula = ''
                 this.formulaData = ''
 
             },
@@ -291,60 +287,46 @@
             },
             /** 添加节点进入公式*/
             addItemBtn(item,_index){
-                let str ='{{'+item.name+'}}'
-                console.log(_index)
-                let res =  this.setCompute(str,0)
-
-                // 需要考虑到底字段能不能重复被选择
-                // if(res){
-                //     this.computeList.splice(_index,1)
-                // }else{
-                //     this.$message.error('出错了！')
-                // }
-                if(res == false){
-                    this.$message.error('出错了！')
+                let str = '{{'+item.name+'}}'
+                if(this.formulaData == undefined || this.formulaData == null ||this.formulaData == ''){
+                    this.formulaData =  str
+                }else{
+                    let res =this.$commen.validataCompute(this.formulaData,0)
+                    if(res){
+                        this.formulaData = this.formulaData+ str
+                    }else{
+                        this.$message.error('插入数据失败')
+                    }
                 }
             },
             /** 选择运算符*/
             addSign(item){
-                let res  = this.setCompute(item,1)
-                if(!res){
-                    this.$message.error('出错了')
-                }
-            },
-            /** 设置公式
-             * item 具体节点（字段/运算符）
-             * key  0:字段 1:运算符
-             * */
-            setCompute(item,key){
-                if(key == 0){
-                    console.log()
-                    if(this.formulaData.substr(this.formulaData.length-1,1) == '}'){
-                        return false
+                let str =item
+                if(this.formulaData == undefined || this.formulaData == null ||this.formulaData == ''){
+                    if(str == '(' ){
+                        this.formulaData = str
                     }else{
-                        this.formulaData = this.formulaData+item
-                        return true
+                        this.$message.error('操作失败，请先选择一个数据子项')
                     }
-                }else {
-                    if(this.formulaData.substr(this.formulaData.length-1,1) == '}'){
-                        this.formulaData = this.formulaData+item
-                        return true
+                }else{
+                    let res =this.$commen.validataCompute(this.formulaData,1,str)
+                    if(res){
+                        this.formulaData = this.formulaData+ str
                     }else{
-                        return false
+                        this.$message.error('操作失败，请先选择一个数据子项')
                     }
                 }
             },
-
-            /**  */
+            /** */
             setFormulaBtn(){
-                this.data.formula = this.formulaData
+                this.data.computeFormula = this.formulaData
                 this.formulaData = ''
                 this.showFormula = false
 
             },
             /** 重置计算公式,重新计算可选项*/
             resetCompute(){
-                this.formulaData = ''
+                this.formulaData = this.data.computeFormula
                 this.computeList = []
                 for(let i =0;i<this.tableData.length;i++){
                     if(this.tableData[i].dataType == 'int' || this.tableData[i].dataType == 'decimal' || this.tableData[i].dataType == 'money'){
@@ -355,30 +337,6 @@
                 }
             },
 
-            /** 重置变量值*/
-            resetData(){
-                let obj = {
-                    name: '',              //字段名
-                    alias: '',             //字段别名
-                    necessary:'0',        //是否必填 0：必填 1：非必填
-                    columnType: 'data',   //数据列还是计算列
-                    dataType: '',          //数据类型
-                    remark:'',            //备注
-                    dataUnit:'',            //单位
-                    computeFormula:'',            //公式
-                    dataProp: {
-                        length: '',      //数据位数
-                        decimals: '',    //小数位数
-                        intRules: '',    //取整规则
-                        start: '',       //开始日期
-                        end: '',         //截止日期
-                        dataUnit:''     //金额单位
-                    },
-                    selections:'',      //选项
-                }
-                this.data = JSON.parse(JSON.stringify(obj))
-            },
-
 
             /** 完成字段配置 更改原表配置 进行赋值*/
             completeBtn(){
@@ -386,7 +344,6 @@
                     this.$message.error('请将必填项填写完整')
                 }else{
                     let nameKey = -1
-
                     if(this.tableData.length >0){
                         for(let i =0;i<this.tableData.length;i++){
                             if(this.tableData[i].name ==this.data.name){
@@ -395,6 +352,7 @@
                             }
                         }
                     }
+
                     if(this.changeIndex == -1){
                         if(nameKey != -1){
                             this.$message.error('字段名不能够重复，请修改字段名')
@@ -405,9 +363,11 @@
                     }else{
                         let obj = JSON.parse(JSON.stringify(this.data))
                         this.tableData.splice(this.changeIndex,1,obj)
-                        this.changeIndex = -1
                     }
-                    this.resetData()
+                    this.changeIndex = '-1'
+                    this.$store.state.tableEditor.changeIndex =  this.changeIndex
+                    this.$store.state.tableEditor.tableData = this.tableData
+                    this.data = JSON.parse(JSON.stringify(this.newData))
                 }
             },
 
@@ -415,11 +375,11 @@
         },
         mounted(){
             this.tableData = this.$store.state.tableEditor.tableData
-            this.changeIndex = this.$store.state.tableEditor.tableActive
+            this.changeIndex = this.$store.state.tableEditor.changeIndex
             if(this.changeIndex == '-1' || this.changeIndex == '0'){
-                this.data =this.newData
+                this.data =JSON.parse(JSON.stringify(this.newData))
             }else{
-                this.data = this.$store.state.tableEditor.tableSetRow
+                this.data = this.$store.state.tableEditor.tableData[this.changeIndex]
             }
 
         }
@@ -427,5 +387,78 @@
 </script>
 
 <style scoped lang="scss">
+    /** 配置器相关*/
+    .menu-title {
+        width: auto;
+        height: 30px;
+        color: #666;
+        font-size: 16px;
+        font-weight: 600;
+        padding: 5px;
+        line-height: 30px;
 
+        border-bottom: 1px solid #b3d8ff
+    }
+
+    .menu-icon-btn {
+        width: 100%;
+        height: 40px;
+        line-height: 40px;
+    }
+
+    .menu-item {
+        width: 100%;
+    }
+
+    .menu-form {
+        overflow-y: auto;
+    }
+    .add-btn-box{
+        margin-top: 30px;
+        width: 100%;
+        height: 40px;
+        line-height: 40px;
+        text-align: center;
+    }
+
+    .form-table-btn{
+        width: auto;
+        height: 40px;
+        margin-top: 40px;
+        line-height: 40px;
+        text-align: center;
+
+    }
+
+    /** 计算公式弹出窗*/
+    .data-list-box{
+        width: 100%;
+    }
+    .tag-sign{
+        font-size: 16px;
+        font-weight: 600;
+        margin:10px 0 0 10px;
+        cursor:pointer;
+    }
+    .tag-sign:hover{
+        background: #f56c6c;
+        color: #fff;
+    }
+    .tag-sign:active{
+        background:#fef0f0;
+        color: #fff;
+    }
+    .tag-item{
+        margin: 10px 0 0 10px;
+        cursor:pointer;
+    }
+    .tag-item:hover{
+        background: #409EFF;
+        color: #fff;
+
+    }
+    .tag-item:active{
+        background: #d9ecff;
+        color: #fff;
+    }
 </style>

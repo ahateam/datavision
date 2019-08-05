@@ -21,9 +21,10 @@ export default new Vuex.Store({
       },
       /** 表格tableEditor 相关*/
       tableEditor:{
-            tableActive:'-1',   //-1 默认打开  0新增   val：选中的table的下标
+            tableActive:'-1',   //-1 默认打开    val：选中的table的下标
+            tableActiveArr:[],
             tableData:[],       //表格数组
-            tableSetRow:{},     //选中编辑赋值
+            changeIndex:'-1',   //编辑的表格 行
       }
   },
   mutations: {

@@ -2,8 +2,14 @@
     <div>
         <div class="form-title">
             <el-form  label-width="100px">
-                <el-form-item label="新建表格名称">
-                    <el-input v-model="tableAlias" size="small" placeholder="请输入新增的表格的名称" style="width: 60%"></el-input>
+                <el-form-item label="表格名称">
+                    <el-input v-model="alias" size="small" placeholder="表名称" style="width: 60%"></el-input>
+                </el-form-item>
+                <el-form-item label="标签选择">
+                    <el-checkbox-group v-model="tags">
+                        <el-checkbox v-for="(item,index) in tagList" :key="index"
+                                     :label="item.name" name="tags" ></el-checkbox>
+                    </el-checkbox-group>
                 </el-form-item>
             </el-form>
         </div>
@@ -18,7 +24,7 @@
                 <th>计算公式</th>
                 <th>操作</th>
                 </thead>
-                <tbody>
+                <tbody >
                     <tr v-for="(item,index) in tableData" :key="index">
                         <td>{{item.name}}</td>
                         <td>{{item.alias}}</td>
@@ -32,7 +38,6 @@
                             {{dataTypeFilter(item.dataType)}}
                         </td>
                         <td>{{item.computeFormula}}</td>
-
                         <td>
                             <el-button type="primary" size="mini" @click="checkDataBtn(index)">编辑</el-button>
                             <el-button type="danger" size="mini" @click="delDataBtn(index)" style="margin-left: 20px">删除</el-button>
@@ -50,13 +55,47 @@
 <script>
     export default {
         name: "tableContent",
+        props:{
+            tagList:Array
+        },
         data(){
             return {
                 tableData:[],
-                tableAlias:'',
-
+                alias:'',
+                type:1,
+                tags:[],
+                dataTypeList:this.$constData.dataTypeList
             }
         },
+        computed:{
+            getTableData(){
+                return this.$store.state.tableEditor.tableData
+            },
+            getTableActive(){
+                return this.$store.state.tableEditor.tableActive
+            },
+        },
+        watch:{
+
+            getTableData(val){
+                this.tableData = JSON.parse(JSON.stringify(val))
+            },
+            getTableActive(val){
+                if(val == '-1'){
+                    this.tableData = []
+                    this.alias = ''
+                    this.tags =[]
+                }else{
+                    this.tableData = this.$store.state.tableEditor.tableActiveArr.columns
+                    this.alias = this.$store.state.tableEditor.tableActiveArr.alias
+                    this.tags = this.$store.state.tableEditor.tableActiveArr.tags
+                    console.log(this.$store.state.tableEditor.tableActiveArr);
+                }
+                this.$store.state.tableEditor.changeIndex = '-1'
+                this.$store.state.tableEditor.tableData = this.tableData
+            }
+        },
+
         methods:{
             /** 数据过滤器*/
             /** 是否必填*/
@@ -86,8 +125,8 @@
             /** 编辑按钮*/
             checkDataBtn(_index){
                 console.log(_index)
-                this.changeIndex =  _index
-                this.data = JSON.parse(JSON.stringify(this.tableData[_index]))
+                this.$store.state.tableEditor.changeIndex = _index
+                // this.data = JSON.parse(JSON.stringify(this.tableData[_index]))
             },
 
             /** 删除一行数据*/
@@ -95,10 +134,36 @@
                 console.log(_index)
             },
 
+
             saveBtn(){
+
+                let cnt = {
+                    tags:this.tags,
+                    alias:this.alias,
+                    type:this.type,
+                    columns:this.$store.state.tableEditor.tableData
+                }
+                this.$api.createTableSchema(cnt,(res)=>{
+                    if(res.data.rc == this.$util.RC.SUCCESS){
+                        this.$message.success('操作成功')
+                    }else{
+                        this.$message.error('操作失败')
+                    }
+                })
+                this.$store.state.tableEditor.tableData = []
+                this.$store.state.tableEditor.tableActive = '-1'
+                this.$store.state.tableEditor.changeIndex = '-1'
+                this.$store.state.tableEditor.tableSetRow = {}
+                this.$router.push('/page')
 
             }
 
+        },
+        mounted(){
+            this.tableData = this.$store.state.tableEditor.tableData
+
+            console.log(this.tagList);
+            console.log(this.tableData);
         }
     }
 </script>
@@ -106,7 +171,7 @@
 <style scoped lang="scss">
     .form-title {
         width: auto;
-        height: 80px;
+        padding: 10px 0px;
         background: #fff;
         line-height: 40px;
         font-size: 16px;
@@ -139,6 +204,11 @@
             background-color: #ffffff;
             text-align: center;
         }
+    }
+
+    .form-table-btn{
+        text-align: center;
+        margin-top: 20px;
     }
 
 </style>

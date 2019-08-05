@@ -170,7 +170,7 @@
                     offset: 0
                 }
                 if (this.addAsset.type == 'table') {
-                    this.$api.getTableSchemas(cnt, (res) => {
+                    this.$api.getTableSchemaByTags(cnt, (res) => {
                         if (res.data.rc == this.$util.RC.SUCCESS) {
                             this.assetList = this.$util.tryParseJson(res.data.c)
                         } else {

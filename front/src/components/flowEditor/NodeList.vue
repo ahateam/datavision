@@ -183,7 +183,7 @@
                       let newActions = []
                       let actions  = JSON.parse(nodeList[i].actions)
                       for( let j=0;j<actions.length;j++){
-                          if(actions[j].target == delNodeId){
+                          if(actions[j].visual.target == delNodeId){
                               key = j
                           }else{
                               newActions.push(actions[j])
@@ -236,6 +236,7 @@
                         this.$api.delPDActivity(cnt1,(res)=>{
                             if(res.data.rc == this.$util.RC.SUCCESS){
                                 this.$message.success('删除成功')
+                                //删除对应的线条关系
                                 this.setNodeAction(item.id)
 
                             }else{

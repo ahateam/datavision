@@ -1,10 +1,10 @@
 <template>
     <div>
         <div class="table-list">
-            <div :class="tableActive.id == item.id?'list-item list-item-active':'list-item '"
+            <div :class="tableActive == index?'list-item list-item-active':'list-item '"
                  v-for="(item,index) in tableList"
                  :key="index"
-                 @click="checkTableBtn(item)">
+                 @click="checkTableBtn(item,index)">
                 {{item.alias}}
             </div>
         </div>
@@ -19,9 +19,11 @@
 <script>
     export default {
         name: "tableList",
+        props:{
+            tableList:Array
+        },
         data(){
             return{
-                tableList:[],
                 tableActive:''
             }
         },
@@ -36,30 +38,21 @@
             }
         },
         methods:{
-            checkTableBtn(item){
-                this.tableActive = item
-                this.$store.state.tableEditor.tableActive = item
+            checkTableBtn(item,_index){
+                this.tableActive = _index
+                this.$store.state.tableEditor.tableActive =  this.tableActive
+                this.$store.state.tableEditor.tableActiveArr = item
+                console.log( this.$store.state.tableEditor.tableActiveArr)
             },
 
             addTableBtn(){
-                this.$store.state.tableEditor.tableAddData = {}
-                this.$store.state.tableEditor.tableSetRow = {}
-                this.$store.state.tableEditor.tableActive = '0'
+                this.$store.state.tableEditor.tableActiveArr = []
+                this.$store.state.tableEditor.tableActive = '-1'
+
             }
         },
         mounted(){
-            let cnt={
-                tags: [], // JSONArray <选填> 标签列表JSON列表，可以为空，即返回所有
-                count: 500, // Integer
-                offset: 0, // Integer
-            }
-            this.$api.getTableSchemas(cnt,(res)=>{
-                if(res.data.rc == this.$util.RC.SUCCESS){
-                    this.tableList = this.$util.tryParseJson(res.data.c)
-                }else{
-                    this.tableList = []
-                }
-            })
+
         }
     }
 </script>

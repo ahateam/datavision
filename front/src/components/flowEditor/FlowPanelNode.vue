@@ -42,9 +42,9 @@
 </template>
 
 <script>
-    import FlowPanelNodeAuth from '../flowPanelNodeChilds/FlowPanelNodeAuth'
-    import FlowPanelNodeAction from '../flowPanelNodeChilds/FlowPanelNodeAction'
-    import FlowNodeResources from '../flowPanelNodeChilds/FlowNodeResources'
+    import FlowPanelNodeAuth from './flowPanelNodeChilds/FlowPanelNodeAuth'
+    import FlowPanelNodeAction from './flowPanelNodeChilds/FlowPanelNodeAction'
+    import FlowNodeResources from './flowPanelNodeChilds/FlowNodeResources'
 
 
     export default {

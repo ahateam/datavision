@@ -3,6 +3,9 @@
         <div class="box">
             <div class="item-list-box">
                 <el-form label-width="100px">
+                    <el-form-item label="行为名称">
+                        <el-input v-model="label"  placeholder="请输入行为名称"></el-input>
+                    </el-form-item>
                     <el-form-item label="行为类型">
                         <el-select v-model="type"
                                    size="small"
@@ -60,11 +63,10 @@
                                 </span>
                         </div>
                         <div class="active-node-item-text">
-
                              <span
                                      v-for="(item1,index1) in nodeList"
                                      :key="index1"
-                                     v-if="item1.id == item.target">
+                                     v-if="item1.id == item.visual.target">
                                     {{item1.label}}
                              </span>
 
@@ -86,8 +88,10 @@
 
         data() {
             return {
+
                 typeList: [],
                 type: '',
+                label:'',
                 target: '',
                 nodeList: [],
                 actions: [],
@@ -96,6 +100,7 @@
 
                 /** 修改行为*/
                 editIndex:-1,
+                visual:{}
             }
         },
         computed: {
@@ -109,14 +114,11 @@
                 this.source = val
 
                 let str = this.$store.state.flowData.nodeActiveInfo.actions
-
-                console.log(this.$store.state.flowData.nodeActiveInfo)
                 this.actions = JSON.parse(str)
-                console.log('2333444')
                 this.type =''
                 this.target =''
+                this.label =''
                 this.getNodeList()
-
             }
         },
         methods: {
@@ -131,16 +133,20 @@
             checkItemAction(item,_index){
                 this.editIndex = _index
                 this.type = item.type
-                this.target =item.target
+                this.label = item.label
+                this.target =item.visual.target
+                this.visual = item.visual
             },
             /** 编辑已有行为*/
             editActionBtn(){
                 if (this.type == '' || this.target == '') {
                     this.$message.error('行为未选择完整')
                 } else {
+                    this.visual.target = this.target
                     let obj = {
+                        label:this.label,
                         type: this.type,
-                        target: this.target
+                        visual:this.visual
                     }
                     this.actions.splice(this.editIndex,1,obj)
                     this.setNodeACtiveInfo(this.actions)
@@ -148,16 +154,22 @@
             },
             /** 新增行为*/
             addActionBtn() {
+                let id = G6.Util.uniqueId()
                 if (this.type == '' || this.target == '') {
                     this.$message.error('行为未选择完整')
                 } else {
                     let obj = {
+                        id:id,
                         type: this.type,
-                        source:this.source,
-                        id:G6.Util.uniqueId(),
-                        target: this.target,
-                        shape: 'hvh'
+                        label:this.label,
+                        visual:{
+                            id:id,
+                            source:this.source,
+                            target: this.target,
+                            shape: 'hvh'
+                        }
                     }
+                    console.log(obj);
                     this.actions.push(obj)
                     this.setNodeACtiveInfo(this.actions)
                 }
@@ -172,6 +184,7 @@
             this.source = this.$store.state.flowData.nodeActive
             this.type =''
             this.target =''
+            this.label = ''
             this.getNodeList()
         }
 

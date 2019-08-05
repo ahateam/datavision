@@ -49,7 +49,6 @@
 
             /** 获取最新的流程图样式 node edge*/
             getFlowStyle(val) {
-                console.log('1111')
                 let nodeList = val.nodeList
                 let edgeList = val.edgeList
                 let graph = this.$store.state.flowData.graph
