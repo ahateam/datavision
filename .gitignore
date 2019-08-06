@@ -10,3 +10,7 @@ target/
 .vertx/
 
 
+
+\.idea/
+
+front/package-lock\.json
