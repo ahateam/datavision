@@ -1,29 +1,37 @@
 <template>
     <div style="height: 100%">
-        <el-container style="height: 100%">
+        <el-container style="height: 100%" v-if="isLoadDom">
             <el-header class="header-box">Header</el-header>
             <el-container style="height: 100%;">
-                <el-aside width="200px" class="item-box" v-if="isLoadDom">
-                    <node-list :flowId="flowId" @changeNodeList="changeNodeList"></node-list>
+
+                <el-aside width="200px" class="item-box" >
+                    <node-list :flowId="flowId"></node-list>
                 </el-aside>
+
                 <el-container>
                     <el-main class="main-box">
-                        <div class="center-box" v-if="isLoadDom">
+                        <div class="center-box" >
                             <flow-editor :flowId="flowId"></flow-editor>
                         </div>
-
                         <div class="info-box">
                             <div class="tab-box">
 
-                                <flow-panel-node></flow-panel-node>
-                            </div>
+                                <flow-panel-node
+                                        v-if="this.$store.state.flowData.nodeActive !='0'"
+                                        :flowId="flowId"
+                                        @resetDom="resetDom">
+                                </flow-panel-node>
 
+                                <flow-public-panel-node
+                                        v-else
+                                        :flowId="flowId">
+                                </flow-public-panel-node>
+
+                            </div>
                             <div class="show-box">
                                 <flow-panel-node-value></flow-panel-node-value>
                             </div>
                         </div>
-
-
                     </el-main>
                     <el-footer class="footer">
 
@@ -31,15 +39,15 @@
                 </el-container>
             </el-container>
         </el-container>
-
     </div>
 </template>
 
 <script>
-    import FlowEditor from '@/components/FlowEditor'
-    import FlowPanelNode from '@/components/FlowPanelNode'
-    import FlowPanelNodeValue from '@/components/FlowPanelNodeValue'
-    import NodeList from '@/components/NodeList'
+    import FlowEditor from '@/components/flowEditor/FlowEditor'
+    import FlowPanelNode from '@/components/flowEditor/FlowPanelNode'
+    import FlowPanelNodeValue from '@/components/flowEditor/FlowPanelNodeValue'
+    import NodeList from '@/components/flowEditor/NodeList'
+    import FlowPublicPanelNode from '@/components/flowEditor/FlowPublicPanelNode'
 
     export default {
         name: "flowDesign",
@@ -47,51 +55,87 @@
             FlowEditor,
             FlowPanelNode,
             FlowPanelNodeValue,
-            NodeList
+            NodeList,
+            FlowPublicPanelNode
         },
         data() {
             return {
                 flowId: '',
                 nodeList:[],
+                edgeList:[],
                 isLoadDom:false,
 
             }
         },
-        methods: {
-            /** 获取样式节点信息*/
-            getProcessDefinitionByPDId(cnt){
-                this.$api.getProcessDefinitionByPDId(cnt, (res) => {
-                    if(res.data.rc == this.$util.RC.SUCCESS){
-                        this.nodeList = this.$util.tryParseJson(res.data.c).visual
-                    }else{
-                        this.nodeList = []
-                    }
-                    this.$store.state.nodeList = this.nodeList
-                    this.isLoadDom = true
-                    console.log(this.nodeList)
-                })
-            },
-            /** 更新节点样式列表*/
-            changeNodeList(isChangeNode){
-                if(isChangeNode){
-                    let cnt = {
-                        pdId: this.flowId
-                    }
-                    this.getProcessDefinitionByPDId(cnt)
-                }
+        computed:{
+            getNodeActive(){
+                return this.$store.state.flowData.nodeActive
             }
         },
-        created(){
-            if(this.$store.state.flowId ==undefined ||this.$store.state.flowId ==''){
-                this.$router.push('/processList')
+        watch:{
+            getNodeActive(val){
+                this.changeNodeList()
+            }
+        },
+        methods: {
+            resetDom(val){
+                this.$router.push('/page')
+            },
+            /** 获取样式节点信息*/
+            getPDActivityList(cnt){
+                let nodeList = []
+                let edgeList = []
+                this.$api.getPDActivityList(cnt, (res) => {
+                    if(res.data.rc == this.$util.RC.SUCCESS){
+                        let arr = this.$util.tryParseJson(res.data.c)
+                        for(let i=0;i<arr.length;i++){
+                            nodeList.push(arr[i].visual)
+                            /*更新所有的线条*/
+                            let actions =JSON.parse( arr[i].actions)
+                            for(let j =0 ;j<actions.length;j++){
+                                edgeList.push(actions[j].visual)
+                            }
+                        }
+                    }else{
+                        nodeList = []
+                    }
+
+                    this.$store.state.flowStyle.edgeList = edgeList
+                    this.$store.state.flowStyle.nodeList = nodeList
+                    this.isLoadDom = true
+
+
+                })
+
+            },
+
+
+            /** 更新节点样式列表*/
+
+
+            changeNodeList(){
+                    let cnt = {
+                        pdId: this.flowId,
+                        count:500,
+                        offset:0
+                    }
+                    this.getPDActivityList(cnt)
             }
         },
         mounted() {
-            this.flowId = this.$store.state.flowId
-            let cnt = {
-                pdId: this.flowId
+            this.flowId = localStorage.getItem('flowId')
+            this.$store.state.flowData.nodeActive = '0'
+            this.$store.state.flowData.nodeActiveInfo ={}
+            if(this.flowId == undefined || this.flowId == ''){
+                this.$message.error('请先选择一个流程')
+                this.$router.push('/processList')
             }
-            this.getProcessDefinitionByPDId(cnt)
+            let cnt = {
+                pdId: this.flowId,
+                count:500,
+                offset:0
+            }
+            this.getPDActivityList(cnt)
         }
     }
 </script>
@@ -138,7 +182,7 @@
     /*右侧内容样式*/
     .tab-box {
         width: 100%;
-        height: 400px;
+        height: 710px;
     }
 
     .show-box {
