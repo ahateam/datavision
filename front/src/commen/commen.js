@@ -83,6 +83,29 @@ commen.validataCompute=function(formula,key,item=''){
     return res
 }
 
+/** @getFormulaRepeat 根据字段名判断计算公式是否已经出现过该字段
+ *  @name 需要判断的字段名 String
+ *  @formula 完整的计算公式  String
+ *  @return  计算公式有此字段：true  没有此字段：false
+ * */
+
+commen.getFormulaRepeat = function (name,formula) {
+    let start = formula.indexOf('{{')
+    let end = formula.indexOf('}}')
+    let res = false
+    while (start!=-1){
+        if(formula.substring(start+2,end) == name){
+            res = true
+            break
+        }
+        formula = formula.substring(end+2)
+        start = formula.indexOf('{{')
+        end = formula.indexOf('}}')
+    }
+
+    return res
+}
+
 
 
 export default {

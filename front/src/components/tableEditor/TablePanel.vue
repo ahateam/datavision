@@ -326,13 +326,28 @@
             },
             /** 重置计算公式,重新计算可选项*/
             resetCompute(){
+
                 this.formulaData = this.data.computeFormula
                 this.computeList = []
+                let arr = []
                 for(let i =0;i<this.tableData.length;i++){
                     if(this.tableData[i].dataType == 'int' || this.tableData[i].dataType == 'decimal' || this.tableData[i].dataType == 'money'){
-                        let obj = JSON.parse(JSON.stringify(this.tableData[i]))
+                        if(this.tableData[i].name != this.data.name){
+                           let obj= JSON.parse(JSON.stringify(this.tableData[i]))
+                            arr.push(obj)
+                        }
                         /** 需要满足 当前字段没有成为 其他的字段中的计算公式的 子项    如果是修改操作可能已经有部分字段已经加入到那个字段*/
-                        this.computeList.push(obj)
+                    }
+                }
+                /**  去掉已经有当前列成为子项用来计算的列*/
+                for(let i =0;i<arr.length;i++){
+                    if(arr[i].computeFormula != null && arr[i].computeFormula != undefined && arr[i].computeFormula != ''){
+                        let res = this.$commen.getFormulaRepeat(this.data.name,arr[i].computeFormula)
+                        if(res == false){
+                            this.computeList.push(arr[i])
+                        }
+                    }else{
+                        this.computeList.push(arr[i])
                     }
                 }
             },
@@ -375,6 +390,7 @@
         },
         mounted(){
             this.tableData = this.$store.state.tableEditor.tableData
+            console.log(this.tableData)
             this.changeIndex = this.$store.state.tableEditor.changeIndex
             if(this.changeIndex == '-1' || this.changeIndex == '0'){
                 this.data =JSON.parse(JSON.stringify(this.newData))

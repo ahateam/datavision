@@ -6,6 +6,9 @@
 
                 <el-aside width="200px" class="item-box" >
                     <node-list :flowId="flowId"></node-list>
+                    <div class="show-box">
+                        <flow-panel-node-value></flow-panel-node-value>
+                    </div>
                 </el-aside>
 
                 <el-container>
@@ -28,9 +31,7 @@
                                 </flow-public-panel-node>
 
                             </div>
-                            <div class="show-box">
-                                <flow-panel-node-value></flow-panel-node-value>
-                            </div>
+
                         </div>
                     </el-main>
                     <el-footer class="footer">
@@ -111,8 +112,6 @@
 
 
             /** 更新节点样式列表*/
-
-
             changeNodeList(){
                     let cnt = {
                         pdId: this.flowId,

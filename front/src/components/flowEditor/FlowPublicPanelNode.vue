@@ -15,7 +15,7 @@
         <div class="tab-item">
             <!--资源配置右侧-->
             <div v-if="tabActive == 0">
-               1111
+
             </div>
             <!--权限配置右侧-->
             <div v-if="tabActive == 1">

@@ -15,6 +15,10 @@ const tableDesign =()=> import('./views/tableDesign')
 const pageHome =()=>import('./views/page/home/pageHome')
 const processList =()=> import('./views/page/process/processList')
 
+/** 用户使用流程 填写*/
+const userFlowList =()=>import('./views/userInData/userFlowList')
+const userInflow =()=>import('./views/userInData/userInflow')
+
 Vue.use(Router)
 
 export default new Router({
@@ -62,8 +66,17 @@ export default new Router({
             name:'tableDesign',
             component:tableDesign
         },
-
-
+        /* 录入流程实例的数据*/
+        {
+            path:'/tableDesign',
+            name:'tableDesign',
+            component:tableDesign
+        },
+        {
+            path:'/userInflow',
+            name:'userInflow',
+            component:userInflow
+        },
         /** 页面*/
         {
             path:'/pageHome',
@@ -75,6 +88,12 @@ export default new Router({
                     name:'processList',
                     component:processList
                 },
+
+                {
+                    path:'/userFlowList',
+                    name:'userFlowList',
+                    component:userFlowList
+                }
 
             ]
         },

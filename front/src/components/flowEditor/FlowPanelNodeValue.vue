@@ -10,8 +10,8 @@
         </el-form>
         <el-row v-if="isNodeItem ">
             <el-col :span="24" style="text-align: center">
-                    <el-button type="primary" @click="changeItem" size="small">确认修改</el-button>
-                <!--<el-button type="danger" style="margin-left: 15px" @click="delItem" size="small">删除选中</el-button>-->
+                <el-button type="primary" @click="changeItem" size="small">确认修改</el-button>
+                <el-button type="danger" style="margin-left: 15px" @click="setStartBtn" size="small">设置起点</el-button>
             </el-col>
         </el-row>
     </div>
@@ -52,7 +52,6 @@
         },
         methods: {
             changeItem() {
-
                 const item = this.$store.state.flowData.graph.findById(this.newGraphId)
                 let model = item._cfg.model
                 model.label = this.newGraphLabel
@@ -69,6 +68,19 @@
                 }
                 this.$store.state.flowStyle.nodeList =this.nodeList
             },
+            /** 设置起点*/
+            setStartBtn(){
+                let cnt = {
+                    activityId: this.newGraphId
+                }
+                this.$api.setFirstActivity(cnt,(res)=>{
+                    if(res.data.rc == this.$util.RC.SUCCESS){
+                        this.$message.success('操作成功')
+                    }else{
+                        this.$message.error('操作失败')
+                    }
+                })
+            }
             // delItem() {
             //     // const item = this.$store.state.flowData.graph.findById(this.newGraphId)
             //     // this.$store.state.flowData.graph.removeItem(item)

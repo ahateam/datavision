@@ -12,6 +12,7 @@ console.log('开始调用ctrl');
 api.getPDList= function (cnt,callback) {
     util.call(baseUrl+'/flow/getPDList', cnt, callback)
 }
+
 //新增流程图
 api.createPD= function (cnt,callback) {
     util.call(baseUrl+'/flow/createPD', cnt, callback)
@@ -36,6 +37,11 @@ api.delPDActivity= function (cnt,callback) {
 api.setPDActivityVisual= function (cnt,callback) {
     util.call(baseUrl+'/flow/setPDActivityVisual', cnt, callback)
 }
+//设置节点起点
+api.setFirstActivity= function (cnt,callback) {
+    util.call(baseUrl+'/flow/setFirstActivity', cnt, callback)
+}
+
 //获取所有的资源列表
 api.getPDAssetList= function (cnt,callback) {
     util.call(baseUrl+'/flow/getPDAssetList', cnt, callback)
@@ -115,6 +121,20 @@ api.createTableSchema= function (cnt,callback) {
 }
 
 
+
+/** 流程数据定义完成后进行展示--*/
+//创建流程事务
+api.createTableSchema= function (cnt,callback) {
+    util.call(baseUrl+'/process/createProcess', cnt, callback)
+}
+//流程事务列表
+api.getProcessList= function (cnt,callback) {
+    util.call(baseUrl+'/process/getProcessList', cnt, callback)
+}
+//删除单个流程事务
+api.delProcess = function (cnt,callback) {
+    util.call(baseUrl+'/process/delProcess', cnt, callback)
+}
 
 export default api
 

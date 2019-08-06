@@ -1,15 +1,12 @@
 <template>
     <div>
-
+        流程active操作
     </div>
 </template>
 
 <script>
     export default {
-        name: "page",
-        created(){
-            this.$router.go(-1)
-        }
+        name: "userInflow"
     }
 </script>
 
