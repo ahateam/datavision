@@ -42,8 +42,6 @@ public class DVVerticle extends ZeroVerticle {
 		
 		initCtrl(ctrlMap, Singleton.ins(ProcessService.class, "process"));	
 
-		initCtrl(ctrlMap, Singleton.ins(ProcessService.class, "process"));
-
 	}
 
 }
