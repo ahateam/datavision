@@ -2,7 +2,12 @@ package xhj.cn.start;
 
 import io.vertx.core.Vertx;
 import zyxhj.core.controller.TestController;
-import zyxhj.flow.controller.FlowController;
+import zyxhj.core.service.TagService;
+import zyxhj.flow.service.AnnexService;
+import zyxhj.flow.service.FlowService;
+import zyxhj.flow.service.ProcessService;
+import zyxhj.flow.service.ReportService;
+import zyxhj.flow.service.TableService;
 import zyxhj.utils.Singleton;
 import zyxhj.utils.ZeroVerticle;
 
@@ -25,7 +30,17 @@ public class DVVerticle extends ZeroVerticle {
 
 		initCtrl(ctrlMap, Singleton.ins(TestController.class, "test"));
 
-		initCtrl(ctrlMap, Singleton.ins(FlowController.class, "flow"));
+		initCtrl(ctrlMap, Singleton.ins(FlowService.class, "flow"));
+		
+		initCtrl(ctrlMap, Singleton.ins(AnnexService.class, "annex"));	
+		
+		initCtrl(ctrlMap, Singleton.ins(TableService.class, "table"));	
+		
+		initCtrl(ctrlMap, Singleton.ins(TagService.class, "tag"));	
+		
+		initCtrl(ctrlMap, Singleton.ins(ReportService.class, "report"));
+		
+		initCtrl(ctrlMap, Singleton.ins(ProcessService.class, "process"));	
 
 	}
 
