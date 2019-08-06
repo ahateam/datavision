@@ -7,18 +7,18 @@
 			<h1 style="text-align: center">让数据栩栩如生</h1>
 			<p style="text-align: center;margin-top: 20px">致力于表单引擎与数据可视化分析引擎</p>
 			<div style="margin-top: 60px;width: 100%;height: 60px;text-align: center;position:relative;background: none">
-				<router-link to="/formDesign">
-					<button class="btn" style="left: 50%;position: absolute;margin-left: -210px">表单引擎</button>
+				<router-link to="/tableDesign">
+					<button class="btn" style="left: 50%;position: absolute;margin-left: -210px">表格编辑器</button>
 				</router-link>
 				<router-link to="/g6Editor">
 					<button class="btn" style="margin-left: 50%;position: absolute;left: -60px;">流程图引擎</button>
 				</router-link>
 
 				<router-link to="/formDesign">
-					<button class="btn" style="position:absolute;margin-left: 50%;left: 100px;">数据可视化</button>
+					<button class="btn" style="position:absolute;margin-left: 50%;left: 100px;">数据表单引擎</button>
 				</router-link>
 
-				<router-link to="/flowDesign">
+				<router-link to="/pageHome">
 					<button class="btn" style="margin-left: 50%;position: absolute;left: 260px;">流程图引擎2</button>
 				</router-link>
 			</div>

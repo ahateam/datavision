@@ -40,6 +40,50 @@ commen.getFormulaResult=function (item,formula) {
     return value
 }
 
+/** @getGraphNodes  根据canvas图形更新 全局状态nodeList
+ *  @graphNodes  最新的画图的节点列表 Array
+ *  @return   只有canvas model的数组 Array
+ * */
+commen.getGraphNodes = function (graphNodes) {
+    let arr = []
+    for(let i=0;i<graphNodes.length;i++){
+        arr.push(graphNodes[i]._cfg.model)
+    }
+    return arr
+}
+
+/** @validataCompute 判断增加字符串或数据子项是否合法
+ *  @formula  计算公式 必须非空字符串
+ *  @key  0：数据子项 1：运算符号
+ *  @item  要增加的字符串
+ * */
+commen.validataCompute=function(formula,key,item=''){
+    let str = formula.substr(formula.length-1,1)
+    let res = false
+    /* 增加数据项*/
+    if(key == 0){
+
+        if(str == '}' || str == ')'){
+            res = false
+        }else{
+            res = true
+        }
+    } else if(key == 1){ //增加计算符号
+        if(item =='('){
+            if(str !='}' && str !=')'){
+                res = true
+            }
+        }else{
+            if(str == '}' || str == ')'){
+                res = true
+            }
+        }
+
+    }
+    return res
+}
+
+
 
 export default {
     commen

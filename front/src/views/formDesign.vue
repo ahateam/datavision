@@ -6,17 +6,15 @@
                 <el-aside width="200px" style="background: azure">表单左侧边栏</el-aside>
                 <el-container>
                     <el-main>
-
                         <div class="center-box" :style="centerBoxStyle">
                             <div class="form-title">
                                 <el-form  label-width="100px">
                                     <el-form-item label="新建表格名称">
                                         <el-input v-model="tableAlias" size="small" placeholder="请输入新增的表格的名称" style="width: 60%"></el-input>
                                     </el-form-item>
-
                                 </el-form>
-
                             </div>
+
 
                             <div class="form-table">
                                 <table class="table-design">
@@ -52,15 +50,15 @@
                                             </td>
                                         </tr>
                                     </tbody>
-
-
                                 </table>
-
                             </div>
                             <div class="form-table-btn">
                                 <el-button type="primary" size="small" @click="saveBtn" style="width: 20%">提交数据配置</el-button>
                             </div>
                         </div>
+
+
+
                         <div class="menu-box" ref="menuBox">
                             <div class="menu-title">
                                 <span style="margin-left: 20px">字段配置</span>

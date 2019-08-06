@@ -31,10 +31,12 @@
 					children: 'field',
 					label: 'text'
 				},
+
 			}
 		},
 		props: {
 			content:Array,
+			flowId:Number||String
 		},
 		watch: {
 			searchTableData(val) {
@@ -50,6 +52,9 @@
 				if (!value) return true;
 				return data.text.indexOf(value) !== -1;
 			},
+		},
+		mounted(){
+
 		}
 	}
 </script>
