@@ -7,7 +7,7 @@
                 <el-aside width="200px" class="item-box" >
                     <node-list :flowId="flowId"></node-list>
                     <div class="show-box">
-                        <flow-panel-node-value></flow-panel-node-value>
+                        <flow-panel-node-value :flowId="flowId"></flow-panel-node-value>
                     </div>
                 </el-aside>
 
@@ -80,7 +80,7 @@
         },
         methods: {
             resetDom(val){
-                this.$router.push('/page')
+                this.$router.push({path:'/page',name:'page',params:{routerUrl:'flowDesign'}})
             },
             /** 获取样式节点信息*/
             getPDActivityList(cnt){

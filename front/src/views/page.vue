@@ -8,8 +8,11 @@
     export default {
         name: "page",
         created(){
+
             this.$router.go(-1)
-        }
+
+        },
+
     }
 </script>
 

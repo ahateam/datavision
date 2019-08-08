@@ -3,8 +3,6 @@ import Router from 'vue-router'
 import home from './views/home'
 
 /** 业务组件页面*/
-const test = () => import('./views/test')
-const test1 =()=> import('./views/test1')
 const formDesign =()=>import('./views/formDesign')
 const flowDesign =()=>import('./views/flowDesign')
 const g6Editor =()=>import('./views/g6Editor')
@@ -47,16 +45,6 @@ export default new Router({
             component:g6Editor
         },
         {
-            path: '/test',
-            name: 'test',
-            component: test
-        },
-        {
-            path:'/test1',
-            name:'test1',
-            component:test1
-        },
-        {
             path:'/page',
             name:'page',
             component:page
@@ -72,11 +60,7 @@ export default new Router({
             name:'tableDesign',
             component:tableDesign
         },
-        {
-            path:'/userInflow',
-            name:'userInflow',
-            component:userInflow
-        },
+
         /** 页面*/
         {
             path:'/pageHome',
@@ -93,7 +77,13 @@ export default new Router({
                     path:'/userFlowList',
                     name:'userFlowList',
                     component:userFlowList
-                }
+                },
+                {
+                    path:'/userInflow',
+                    name:'userInflow',
+                    component:userInflow
+                },
+
 
             ]
         },

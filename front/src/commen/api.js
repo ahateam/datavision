@@ -38,8 +38,8 @@ api.setPDActivityVisual= function (cnt,callback) {
     util.call(baseUrl+'/flow/setPDActivityVisual', cnt, callback)
 }
 //设置节点起点
-api.setFirstActivity= function (cnt,callback) {
-    util.call(baseUrl+'/flow/setFirstActivity', cnt, callback)
+api.setPDStartActivity= function (cnt,callback) {
+    util.call(baseUrl+'/flow/setPDStartActivity', cnt, callback)
 }
 
 //获取所有的资源列表
@@ -124,17 +124,25 @@ api.createTableSchema= function (cnt,callback) {
 
 /** 流程数据定义完成后进行展示--*/
 //创建流程事务
-api.createTableSchema= function (cnt,callback) {
+api.createProcess= function (cnt,callback) {
     util.call(baseUrl+'/process/createProcess', cnt, callback)
 }
 //流程事务列表
-api.getProcessList= function (cnt,callback) {
-    util.call(baseUrl+'/process/getProcessList', cnt, callback)
+api.getProcessListByUserId= function (cnt,callback) {
+    util.call(baseUrl+'/process/getProcessListByUserId', cnt, callback)
 }
 //删除单个流程事务
 api.delProcess = function (cnt,callback) {
     util.call(baseUrl+'/process/delProcess', cnt, callback)
 }
 
+//获取流程事务的详细信息
+api.getProcessInfo = function (cnt,callback) {
+    util.call(baseUrl+'/process/getProcessInfo', cnt, callback)
+}
+//获取流程下所有节点的操作日志
+api.getProcessLogList = function (cnt,callback) {
+    util.call(baseUrl+'/process/getProcessLogList', cnt, callback)
+}
 export default api
 

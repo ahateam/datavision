@@ -25,6 +25,10 @@ export default new Vuex.Store({
             tableActiveArr:[],
             tableData:[],       //表格数组
             changeIndex:'-1',   //编辑的表格 行
+      },
+      /** 用户使用流程 process*/
+      process:{
+          activityId:'',
       }
   },
   mutations: {

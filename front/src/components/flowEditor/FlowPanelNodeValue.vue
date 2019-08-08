@@ -20,6 +20,9 @@
 <script>
     export default {
         name: "FlowPanelNodeValue",
+        props:{
+          flowId:String,
+        },
         data() {
             return {
                 newGraphLabel: '',
@@ -71,9 +74,10 @@
             /** 设置起点*/
             setStartBtn(){
                 let cnt = {
-                    activityId: this.newGraphId
+                    pdId:this.flowId,
+                    startActivityId: this.newGraphId
                 }
-                this.$api.setFirstActivity(cnt,(res)=>{
+                this.$api.setPDStartActivity(cnt,(res)=>{
                     if(res.data.rc == this.$util.RC.SUCCESS){
                         this.$message.success('操作成功')
                     }else{

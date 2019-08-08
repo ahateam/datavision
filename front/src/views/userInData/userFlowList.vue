@@ -106,13 +106,21 @@
             /** 选中事务*/
             addChoseBtn(item){
                 /*跳转页面 有问题*/
-                // this.$router.push({
-                //     path:'/userFlowList',
-                //     name:'userFlowList',
-                //     params:{
-                //         info:item
-                //     }
-                // })
+                this.$router.push({
+                    path:'/userInflow',
+                    name:'userInflow',
+                    params:{
+                        info:item
+                    }
+                })
+            },
+            /* 重置默认变量*/
+            resetData(){
+                this.title = ''
+                this.remark =''
+                this.pdId = ''
+                this.page = 1
+                this.addFlowDataModelShow = false
             },
             addFlowData(){
                 let cnt ={
@@ -120,18 +128,25 @@
                     title: this.title, // String 流程标题
                     remark: this.remark, // String
                 }
-                this.$api.createTableSchema(cnt,(res)=>{
+                this.$api.createProcess(cnt,(res)=>{
                     if(res.data.rc == this.$util.RC.SUCCESS){
                         this.$message.success('操作成功')
                     }else{
                         this.$message.error('操作失败')
                     }
+                    this.resetData()
+                    let cnt1 = {
+                        userId:'111',
+                        offset:this.offset,
+                        count:this.count,
+                    }
+                    this.getProcessListByUserId(cnt1)
+
                 })
-                this.$router.push('/page')
             },
             /** 获取流程事务列表*/
-            getProcessList(cnt){
-                this.$api.getProcessList(cnt,(res)=>{
+            getProcessListByUserId(cnt){
+                this.$api.getProcessListByUserId(cnt,(res)=>{
                     if(res.data.rc == this.$util.RC.SUCCESS){
                         this.tableData =this.$util.tryParseJson(res.data.c)
                     }else{
@@ -151,10 +166,11 @@
             changePage(page){
                 this.page = page
                 let cnt ={
+                    userId:'111',
                     offset:(this.page-1)*this.count,
                     count:this.count
                 }
-                this.getProcessList(cnt)
+                this.getProcessListByUserId(cnt)
             },
 
             //删除单个流程实例--删除流程事务
@@ -170,7 +186,13 @@
                             }else {
                                 this.$message.error('操作失败')
                             }
-                            this.$router.push('/page')
+                            let cnt1 = {
+                                userId:'111',
+                                offset:this.offset,
+                                count:this.count,
+                            }
+                            this.getProcessListByUserId(cnt1)
+                            this.resetData()
                         })
                     })
                     .catch(_ => {})
@@ -192,10 +214,11 @@
                 console.log(this.pdList);
             })
             let cnt1 = {
+                userId:'111',
                 offset:this.offset,
                 count:this.count,
             }
-            this.getProcessList(cnt1)
+            this.getProcessListByUserId(cnt1)
         }
     }
 </script>

@@ -127,7 +127,7 @@
                         this.$api.delPD(cnt,(res)=>{
                             if(res.data.rc == this.$util.RC.SUCCESS){
                                 this.$message.success('删除成功')
-                                this.$router.push('/page')
+                                this.$router.push({path:'/page',name:'page',params:{routerUrl:'processList'}})
                             }else{
                                 this.$message.error('删除操作失败')
                             }
@@ -158,7 +158,7 @@
                 this.$api.createPD(cnt,(res)=>{
                     if(res.data.rc == this.$util.RC.SUCCESS){
                         this.$message.success('新增成功！')
-                        this.$router.push('/page')
+                        this.$router.push({path:'/page',name:'page',params:{routerUrl:'processList'}})
                     }else{
                         this.$message.error('新增失败')
                     }
