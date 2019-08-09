@@ -30,15 +30,16 @@
                     </el-form-item>
                 </el-form>
                 <div class="add-btn">
+
                     <el-button type="primary" size="small"
                                @click="addActionBtn()">
-                        新增
+                        确认行为
                     </el-button>
-                    <el-button type="primary" size="small"
-                               @click="editActionBtn()">
-                        修改
-                    </el-button>
-                    <el-button type="danger" size="small"> 清空选中</el-button>
+                    <!--<el-button type="primary" size="small"-->
+                               <!--@click="editActionBtn()">-->
+                        <!--修改-->
+                    <!--</el-button>-->
+                    <!--<el-button type="danger" size="small"> 清空选中</el-button>-->
                 </div>
             </div>
 
@@ -162,15 +163,19 @@
                         id:id,
                         type: this.type,
                         label:this.label,
+                        rules:[{exp:'expDefault',target:this.target}],
                         visual:{
                             id:id,
-                            source:this.source,
-                            target: this.target,
+                            source:this.source+'',
+                            target: this.target+'',
                             shape: 'hvh'
                         }
                     }
-                    console.log(obj);
-                    this.actions.push(obj)
+
+                    //支持多个action跳转 暂时关闭 暂时只支持一个action
+                    // this.actions.push(obj)
+                    this.actions =[]
+                    this.actions[0] =  obj
                     this.setNodeACtiveInfo(this.actions)
                 }
             },

@@ -144,5 +144,28 @@ api.getProcessInfo = function (cnt,callback) {
 api.getProcessLogList = function (cnt,callback) {
     util.call(baseUrl+'/process/getProcessLogList', cnt, callback)
 }
+//执行流程行为
+api.executeProcessAction = function (cnt,callback) {
+    util.call(baseUrl+'/process/executeProcessAction', cnt, callback)
+}
+
+/** 表格操作相关*/
+//获取表格数据
+api.getTableDatas = function (cnt,callback) {
+    util.call(baseUrl+'/table/getTableDatas', cnt, callback)
+}
+//获取表格结构
+api.getTableSchemaById = function (cnt,callback) {
+    util.call(baseUrl+'/table/getTableSchemaById', cnt, callback)
+}
+//插入表格数据
+api.insertProcessTableData	= function (cnt,callback) {
+    util.call(baseUrl+'/process/insertProcessTableData', cnt, callback)
+}
+//获取process填写过的表格
+api.getProcessAssetByDescIds	= function (cnt,callback) {
+    util.call(baseUrl+'/process/getProcessAssetByDescIds', cnt, callback)
+}
+
 export default api
 

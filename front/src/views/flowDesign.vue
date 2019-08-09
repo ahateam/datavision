@@ -89,6 +89,7 @@
                 this.$api.getPDActivityList(cnt, (res) => {
                     if(res.data.rc == this.$util.RC.SUCCESS){
                         let arr = this.$util.tryParseJson(res.data.c)
+                        console.log(arr)
                         for(let i=0;i<arr.length;i++){
                             nodeList.push(arr[i].visual)
                             /*更新所有的线条*/
@@ -100,7 +101,7 @@
                     }else{
                         nodeList = []
                     }
-
+                    console.log(   this.$store.state.flowStyle)
                     this.$store.state.flowStyle.edgeList = edgeList
                     this.$store.state.flowStyle.nodeList = nodeList
                     this.isLoadDom = true

@@ -106,13 +106,8 @@
             /** 选中事务*/
             addChoseBtn(item){
                 /*跳转页面 有问题*/
-                this.$router.push({
-                    path:'/userInflow',
-                    name:'userInflow',
-                    params:{
-                        info:item
-                    }
-                })
+                this.$store.state.process.processInfo = item
+                this.$router.push('/userInflow')
             },
             /* 重置默认变量*/
             resetData(){

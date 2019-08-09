@@ -51,16 +51,19 @@
             getFlowStyle(val) {
                 let nodeList = val.nodeList
                 let edgeList = val.edgeList
+                console.log('--------222222222')
+                console.log(val)
                 let graph = this.$store.state.flowData.graph
+
                 this.reDraw(graph, nodeList, edgeList)
             },
         },
         methods: {
             /** 重新绘图*/
             reDraw(graph, nodeList, edgeList) {
-                console.log('111111')
                 this.nodeData.nodes = nodeList
                 this.nodeData.edges = edgeList
+                console.log(  this.nodeData)
                 graph.changeData(this.nodeData)
 
             },
@@ -125,6 +128,7 @@
                     if (item.hasState('active')) {
                         return
                     } else {
+
                         graph.setItemState(item, 'mouse', true)
                     }
                 },
@@ -185,10 +189,11 @@
                     }
                 },
             })
-            this.nodeData.nodes = this.$store.state.flowStyle.nodeList
-            this.nodeData.edges = this.$store.state.flowStyle.edgeList
-            console.log(this.nodeData.nodes)
+            this.nodeData.nodes = JSON.parse(JSON.stringify(this.$store.state.flowStyle.nodeList))
+            this.nodeData.edges = JSON.parse(JSON.stringify(this.$store.state.flowStyle.edgeList))
+
             graph.data(this.nodeData)
+            console.log(this.nodeData)
             graph.render()
             graph.setMode('default')
 

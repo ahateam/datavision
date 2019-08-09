@@ -89,7 +89,7 @@
                 };
                 this.$api.createPDActivity(cnt,(res)=>{
                     if(res.data.rc == this.$util.RC.SUCCESS){
-                        this.newNodeId = res.data.c
+                        this.newNodeId = this.$util.tryParseJson(res.data.c).id
                         this.addNodeStyle( this.newNodeId )
                     }else{
                         this.$message.error('新增节点失败')

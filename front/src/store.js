@@ -28,7 +28,8 @@ export default new Vuex.Store({
       },
       /** 用户使用流程 process*/
       process:{
-          activityId:'',
+            processInfo:'',
+
       }
   },
   mutations: {

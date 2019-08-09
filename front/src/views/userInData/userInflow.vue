@@ -16,7 +16,8 @@
             <div class="page-next-box" v-if="loading">
                 <process-handle
                         :nodeInfo="nodeInfo"
-                        :assetList="assetList">
+                        :assetList="assetList"
+                        :process="info">
                 </process-handle>
             </div>
         </div>
@@ -50,6 +51,7 @@
         methods:{
             /** 获取节点所需资源列表*/
             getAssetDescList(id){
+                console.log('getAssetDescList-------')
                 let cnt ={
                     ownerId: id, // Long 资产所属编号（流程定义编号或流程节点编号）
                     count: 500, // Integer
@@ -61,8 +63,9 @@
                     }else{
                         this.assetList = []
                     }
-                    this.loading = true
+                    console.log('-----assetList------')
                     console.log(this.assetList)
+                    this.loading = true
                 })
             },
 
@@ -72,13 +75,13 @@
                     pdid: pdid, // Long 流程定义编号
                     activityid: activityid, // Long 流程节点编号
                 }
+
                 this.$api.getPDActivityById(cnt,(res)=>{
                     if(res.data.rc == this.$util.RC.SUCCESS){
                         this.nodeInfo = this.$util.tryParseJson(res.data.c)
-                        console.log(this.nodeInfo)
-
                         this.activityId = this.nodeInfo.id+''
-
+                        console.log('--------activity INfo-----')
+                        console.log(this.nodeInfo)
                         this.getAssetDescList( this.nodeInfo.id)
                     }else{
                         this.nodeInfo = {}
@@ -100,13 +103,12 @@
                     }else{
                         this.processActivityList = []
                     }
-                     console.log( this.processActivityList)
                 })
             }
-
         },
         mounted(){
-            this.info = this.$route.params.info
+            this.info = this.$store.state.process.processInfo
+            console.log(this.info)
             this.loading = false
             let cnt={
                 processId:this.info.id,
@@ -114,10 +116,10 @@
             this.$api.getProcessInfo(cnt,(res)=>{
                 if(res.data.rc == this.$util.RC.SUCCESS){
                     this.processData = this.$util.tryParseJson(res.data.c)
+                    console.log('--------processData------')
                     console.log(this.processData)
                     this.getPDActivityList(this.processData.definition.id)
                     this.getPDActivityById(this.processData.definition.id,this.processData.process.currActivityId)
-
                 }else{
                     this.processData = ''
                 }
@@ -134,8 +136,6 @@
                 }else{
                     this.processLogList = []
                 }
-                console.log('processLogList----')
-                console.log(this.processLogList)
             })
 
 
