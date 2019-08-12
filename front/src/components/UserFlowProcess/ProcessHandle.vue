@@ -40,7 +40,6 @@
                         {{item.label}}
                     </el-button>
                     </span>
-
                 </div>
 
             </div>
@@ -165,7 +164,6 @@
             writeModelShowBtn(item){
                 this.entryData = {}
                 this.entryIds = {}
-
                 this.entryIds.userId = '222'
                 this.entryIds.processId = this.$store.state.process.processInfo.id
                 this.entryIds.descId = item.id
@@ -173,7 +171,6 @@
                 let cnt={
                     id:item.uri,
                 }
-
                 this.$api.getTableSchemaById(cnt,(res)=>{
                     if(res.data.rc == this.$util.RC.SUCCESS){
                         this.table = this.$util.tryParseJson(res.data.c)
@@ -199,6 +196,8 @@
                 console.log(this.entryData)
                 this.entryIds.data = this.entryData
                 console.log(this.entryIds)
+
+
                 this.$api.insertProcessTableData(this.entryIds,(res)=>{
                     if(res.data.rc == this.$util.RC.SUCCESS){
                         this.$message.success('提交数据成功')

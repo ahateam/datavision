@@ -6,11 +6,9 @@ import store from './store'
 
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css'
-import './assets/icon/iconfont.css'
-
 import FormMaking from 'form-making'
 import 'form-making/dist/FormMaking.css'
-
+import './assets/icon/iconfont.css'
 import util from 'ahaapi'
 import api from './commen/api'
 import commen from './commen/commen'

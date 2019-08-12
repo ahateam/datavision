@@ -8,6 +8,7 @@ const flowDesign =()=>import('./views/flowDesign')
 const g6Editor =()=>import('./views/g6Editor')
 const page =()=>import('./views/page')
 const tableDesign =()=> import('./views/tableDesign')
+const reportDesign =()=>import('./views/reportDesign')
 
 /** page页面*/
 const pageHome =()=>import('./views/page/home/pageHome')
@@ -72,7 +73,6 @@ export default new Router({
                     name:'processList',
                     component:processList
                 },
-
                 {
                     path:'/userFlowList',
                     name:'userFlowList',
@@ -82,6 +82,11 @@ export default new Router({
                     path:'/userInflow',
                     name:'userInflow',
                     component:userInflow
+                },
+                {
+                    path:'/reportDesign',
+                    name:'reportDesign',
+                    component:reportDesign
                 },
 
 

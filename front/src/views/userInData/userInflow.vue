@@ -9,8 +9,7 @@
                 <process-activity-list
                         :processActivityList="processActivityList"
                         :processLogList="processLogList"
-                        :activityId="activityId"
-                        >
+                        :activityId="activityId">
                 </process-activity-list>
             </div>
             <div class="page-next-box" v-if="loading">
@@ -103,6 +102,8 @@
                     }else{
                         this.processActivityList = []
                     }
+                    console.log('------processActivityList-------')
+                    console.log(this.processActivityList)
                 })
             }
         },
@@ -136,6 +137,8 @@
                 }else{
                     this.processLogList = []
                 }
+                console.log('---------processLogList-------')
+                console.log(this.processLogList)
             })
 
 

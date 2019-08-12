@@ -5,7 +5,12 @@
             <div class="list-item-box" v-else>
                 <div :class="activityId==item.id?' list-item list-item-active':'list-item '"
                      v-for="(item,index) in processActivityList " :key="index">
-                     <span class="sign-icon"><i class="iconfont icon-dian"></i> </span> {{item.visual.label}}
+                        <span v-for="(item1,index1) in processLogList" :key="index1">
+                            <span class="sign-icon"  v-if="item1.id == item.id"><i class="iconfont icon-dian"></i> </span>
+                        </span>
+
+
+                    {{item.visual.label}}
                 </div>
             </div>
         </div>
@@ -64,6 +69,6 @@
         width: 20px;
         height: 40px;
         float: right;
-        color: #f60;
+        color: #67C23A;
     }
 </style>
