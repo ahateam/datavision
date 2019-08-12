@@ -166,6 +166,10 @@ api.insertProcessTableData	= function (cnt,callback) {
 api.getProcessAssetByDescIds	= function (cnt,callback) {
     util.call(baseUrl+'/process/getProcessAssetByDescIds', cnt, callback)
 }
+//获取用户在process里面填写过的资源列表
+api.getProcessAssetByProcessId	= function (cnt,callback) {
+    util.call(baseUrl+'/process/getProcessAssetByProcessId', cnt, callback)
+}
 
 export default api
 

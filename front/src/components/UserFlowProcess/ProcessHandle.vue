@@ -230,22 +230,25 @@
                 descIds.push(this.assetList[i].id)
             }
 
-            let cnt = {
-                processId:this.$store.state.process.processInfo,
-                descIds:descIds,
+
+
+            /** 获取用户已经填写过的资源 列表  返回有误*/
+            let cnt1= {
+                processId:this.$store.state.process.processInfo.id,
+                userId:'222',
                 count:500,
                 offset:0
             }
-            this.$api.getProcessAssetByDescIds(cnt,(res)=>{
-                console.log(this.tableOverList)
+            let tableOverList = []
+            this.$api.getProcessAssetByProcessId(cnt1,(res)=>{
                 if(res.data.rc == this.$util.RC.SUCCESS){
-                    this.tableOverList = this.$util.tryParseJson(res.data.c)
-                }else {
-                    this.tableOverList = []
+                    tableOverList = this.$util.tryParseJson(res.data.c)
+                }else{
+                    tableOverList = []
                 }
-                console.log(this.tableOverList)
+                console.log('------用户已经提交的资源----');
+                console.log(tableOverList)
             })
-
 
 
         }
