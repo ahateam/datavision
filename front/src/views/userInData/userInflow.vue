@@ -1,10 +1,10 @@
 <template>
-    <div>
-        <div class="header-box" v-if="loading ">
-                <div class="flow-title">{{processData.process.title}}</div>
-                <div class="flow-content">{{processData.process.remark}} </div>
+    <div  v-loading="loading" >
+        <div class="header-box" v-if="!loading">
+                <div class="flow-title" >{{processData.process.title}}</div>
+                <div class="flow-content" >{{processData.process.remark}} </div>
         </div>
-        <div class="flow-activity-content">
+        <div class="flow-activity-content" v-if="!loading">
             <div class="node-list">
                 <process-activity-list
                         :processActivityList="processActivityList"
@@ -12,11 +12,12 @@
                         :activityId="activityId">
                 </process-activity-list>
             </div>
-            <div class="page-next-box" v-if="loading">
+            <div class="page-next-box" >
                 <process-handle
                         :nodeInfo="nodeInfo"
                         :assetList="assetList"
-                        :process="info">
+                        :process="info"
+                        @changeActivity="getChildActivityId">
                 </process-handle>
             </div>
         </div>
@@ -38,7 +39,7 @@
                 processActivityList:[],
                 loading:false,
                 activityId:'',
-                processLogList:[]
+                processLogList:[],
             }
         },
         components:{
@@ -48,6 +49,52 @@
 
 
         methods:{
+            /** 子节点操作完成 求更新*/
+            getChildActivityId(id){
+                if(id == '0'){
+                    this.getData()
+                }
+            },
+
+            getData(){
+                this.loading = true
+                this.info = this.$store.state.process.processInfo
+                console.log(this.info)
+
+                let cnt={
+                    processId:this.info.id,
+                }
+                this.$api.getProcessInfo(cnt,(res)=>{
+                    if(res.data.rc == this.$util.RC.SUCCESS){
+                        this.processData = this.$util.tryParseJson(res.data.c)
+                        console.log('--------processData------')
+                        console.log(this.processData)
+
+                        this.getPDActivityList(this.processData.definition.id)
+                        this.getPDActivityById(this.processData.definition.id,this.processData.process.currActivityId)
+
+                        this.loading = false
+                    }else{
+                        this.processData = ''
+                    }
+                })
+                /** 请求所有节点的操作日志*/
+                let cnt1={
+                    processId:this.info.id, // Long processId流程编号
+                    count: 500, // Integer
+                    offset: 0, // Integer
+                }
+                this.$api.getProcessLogList(cnt1,(res)=>{
+                    if(res.data.rc == this.$util.RC.SUCCESS){
+                        this.processLogList = this.$util.tryParseJson(res.data.c)
+                    }else{
+                        this.processLogList = []
+                    }
+                    console.log('---------processLogList-------')
+                    console.log(this.processLogList)
+                })
+            },
+
             /** 获取节点所需资源列表*/
             getAssetDescList(id){
                 console.log('getAssetDescList-------')
@@ -62,9 +109,6 @@
                     }else{
                         this.assetList = []
                     }
-                    console.log('-----assetList------')
-                    console.log(this.assetList)
-                    this.loading = true
                 })
             },
 
@@ -108,42 +152,9 @@
             }
         },
         mounted(){
-            this.info = this.$store.state.process.processInfo
-            console.log(this.info)
-            this.loading = false
-            let cnt={
-                processId:this.info.id,
-            }
-            this.$api.getProcessInfo(cnt,(res)=>{
-                if(res.data.rc == this.$util.RC.SUCCESS){
-                    this.processData = this.$util.tryParseJson(res.data.c)
-                    console.log('--------processData------')
-                    console.log(this.processData)
-                    this.getPDActivityList(this.processData.definition.id)
-                    this.getPDActivityById(this.processData.definition.id,this.processData.process.currActivityId)
-                }else{
-                    this.processData = ''
-                }
-            })
-            /** 请求所有节点的操作日志*/
-            let cnt1={
-                processId:this.info.id, // Long processId流程编号
-                count: 500, // Integer
-                offset: 0, // Integer
-            }
-            this.$api.getProcessLogList(cnt1,(res)=>{
-                if(res.data.rc == this.$util.RC.SUCCESS){
-                    this.processLogList = this.$util.tryParseJson(res.data.c)
-                }else{
-                    this.processLogList = []
-                }
-                console.log('---------processLogList-------')
-                console.log(this.processLogList)
-            })
 
-
-
-
+            this.loading = true
+            this.getData()
         }
     }
 </script>

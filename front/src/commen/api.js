@@ -154,21 +154,31 @@ api.executeProcessAction = function (cnt,callback) {
 api.getTableDatas = function (cnt,callback) {
     util.call(baseUrl+'/table/getTableDatas', cnt, callback)
 }
+
 //获取表格结构
 api.getTableSchemaById = function (cnt,callback) {
     util.call(baseUrl+'/table/getTableSchemaById', cnt, callback)
 }
+
 //插入表格数据
 api.insertProcessTableData	= function (cnt,callback) {
     util.call(baseUrl+'/process/insertProcessTableData', cnt, callback)
+}
+//修改表数据
+api.editProcessTableData= function (cnt,callback) {
+    util.call(baseUrl+'/process/editProcessTableData', cnt, callback)
 }
 //获取process填写过的表格
 api.getProcessAssetByDescIds	= function (cnt,callback) {
     util.call(baseUrl+'/process/getProcessAssetByDescIds', cnt, callback)
 }
 //获取用户在process里面填写过的资源列表
-api.getProcessAssetByProcessId	= function (cnt,callback) {
-    util.call(baseUrl+'/process/getProcessAssetByProcessId', cnt, callback)
+api.getProcessAssetList	= function (cnt,callback) {
+    util.call(baseUrl+'/process/getProcessAssetList', cnt, callback)
+}
+//获取用户填写过的资源对应的详细信息
+api.getProcessAssetByIdANDUserId= function (cnt,callback) {
+    util.call(baseUrl+'/process/getProcessAssetByIdANDUserId', cnt, callback)
 }
 
 export default api

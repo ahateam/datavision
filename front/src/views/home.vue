@@ -28,7 +28,10 @@
 
 <script>
 	export default {
-		name: "home"
+		name: "home",
+		mounted(){
+		    localStorage.setItem('userId','222')
+		}
 	}
 </script>
 

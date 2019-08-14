@@ -1,6 +1,6 @@
 <template>
-    <div>
-        <div class="node-title" >
+    <div  v-if="!loading">
+        <div class="node-title"  >
             ---{{nodeInfo.visual.label}}---
         </div>
         <div class="node-content">
@@ -23,11 +23,17 @@
                             <tr v-for="(item,index) in assetList" :key="index">
                                 <td> <span v-if="item.necessary" style="color: #f60;">* </span> {{item.name}}</td>
                                 <td><span style="font-size: 14px;color: #666;">{{item.remark}}</span></td>
-                                <td><span style="color: #666;">否</span></td>
+
+                                <td>
+                                    <span style="color: #67C23A;" v-if="item.assetId">是</span>
+                                    <span style="color: #666;" v-else>否</span>
+                                </td>
                                 <td>
                                     <!--<el-button type="primary" size="small">下载模板</el-button>-->
                                     <!--<el-button type="primary" size="small">上传文件</el-button>-->
-                                    <el-button type="primary" size="small" @click="writeModelShowBtn(item)">在线填写</el-button>
+                                    <el-button type="primary" size="small" @click="writeModelShowBtn(item)"  v-if="item.assetId">重新编辑</el-button>
+                                    <el-button type="primary" size="small" @click="writeModelShowBtn(item)"  v-else>在线填写</el-button>
+
                                 </td>
                             </tr>
                         </tbody>
@@ -108,8 +114,11 @@
             </el-form>
             <div slot="footer" class="dialog-footer">
                 <el-button @click="tableModelShow = false">取 消</el-button>
-                <el-button type="primary" @click="saveEntryDataBtn">确 定</el-button>
+                <el-button type="primary" @click="saveEditDataBtn" v-if="isEdit">保存修改</el-button>
+                <el-button type="primary" @click="saveEntryDataBtn"  v-else>确 定</el-button>
             </div>
+
+
         </el-dialog>
     </div>
 </template>
@@ -124,6 +133,7 @@
         },
         data(){
             return{
+                loading:true,
                 actions:[],
                 table:{},       //整体表头信息（有表格别名/字段列表）
                 tableHead:[],   //只有表单字段列表
@@ -131,9 +141,11 @@
                 entryIds:{},
 
                 //填写表单
+                isEdit:false,
                 tableModelShow:false,
-
+                tableDataId:'',
                 tableOverList:[],       //被填写过的asset
+
 
             }
         },
@@ -156,21 +168,47 @@
                     }else{
                         this.$message.error('操作失败')
                     }
-                    this.$router.push('/page')
+                    this.$emit('changeActivity','0')
                 })
             },
 
+            getProcessAssetByIdANDUserId(item){
+                if(item.assetId){ //如果用户已经给当前资源输入过数据 需请求已经有的数据出来
+                    let cnt ={
+                        userId:localStorage.getItem('userId'),
+                        assetId:item.assetId
+                    }
+                    this.$api.getProcessAssetByIdANDUserId(cnt,(res)=>{
+                        if(res.data.rc == this.$util.RC.SUCCESS){
+                            this.entryData = this.$util.tryParseJson(res.data.c).tableData.data
+                        }else{
+                            this.entryData = {}
+                        }
+                        this.tableDataId = item.tableDataId
+                        this.isEdit = true
+                        this.tableModelShow = true
+                    })
+                }else{
+                    this.isEdit = false
+                    this.tableModelShow = true
+                }
+            },
 
+            //获取弹窗数据
             writeModelShowBtn(item){
                 this.entryData = {}
                 this.entryIds = {}
-                this.entryIds.userId = '222'
+                this.entryIds.userId = localStorage.getItem('userId')
                 this.entryIds.processId = this.$store.state.process.processInfo.id
                 this.entryIds.descId = item.id
                 this.entryIds.tableSchemaId = item.uri
+
+
                 let cnt={
                     id:item.uri,
                 }
+
+                //获取要输入的数据的表头字段
                 this.$api.getTableSchemaById(cnt,(res)=>{
                     if(res.data.rc == this.$util.RC.SUCCESS){
                         this.table = this.$util.tryParseJson(res.data.c)
@@ -183,30 +221,53 @@
                         this.table = {}
                         this.tableHead ={}
                     }
-                    this.tableModelShow = true
+                    this.getProcessAssetByIdANDUserId(item)
+
 
                 })
 
 
 
+
+
             },
-            /** 保存输入的表单数据*/
+            /** 保存新增的输入的表单数据*/
             saveEntryDataBtn(){
                 console.log(this.entryIds)
                 console.log(this.entryData)
                 this.entryIds.data = this.entryData
                 console.log(this.entryIds)
-
-
                 this.$api.insertProcessTableData(this.entryIds,(res)=>{
                     if(res.data.rc == this.$util.RC.SUCCESS){
                         this.$message.success('提交数据成功')
                     }else{
                         this.$message.error('操作失败')
                     }
+                    this.$emit('changeActivity','0')
+                })
+            },
+
+
+            /** 保存更改的输入的表单数据*/
+            saveEditDataBtn(){
+                console.log('-----entryIds----------')
+                console.log(this.entryIds)
+                let cnt = {
+                    tableSchemaId:this.entryIds.tableSchemaId,
+                    tableDataId:this.tableDataId,
+                    data:this.entryData
+                }
+                this.$api.editProcessTableData(cnt,(res)=>{
+                    console.log(res)
+                    if(res.data.rc == this.$util.RC.SUCCESS){
+                        this.$message.success('操作成功')
+                    }else{
+                        this.$message.success('操作失败')
+                    }
+                    this.$emit('changeActivity','0')
                 })
 
-
+                console.log(cnt)
             },
             /** 计算列单击计算*/
             getComputeVal(){
@@ -219,37 +280,67 @@
                         this.$set( this.entryData,this.tableHead[i].name,val)
                     }
                 }
+            },
+            getNodeData(){
+                this.actions = JSON.parse(this.nodeInfo.actions)
+
+                console.log('2222222')
+                console.log('-----actions--------');
+                console.log(this.actions)
+                console.log('----assetList---------')
+                console.log(this.assetList)
+
+
+                /** 获取用户已经填写过的资源 列表  返回有误*/
+                    //获取单个已经被填写的资源的详细信息--
+                    // 根据已经填写的资源列表与需要的资源id进行匹配之后得到具体的数据id再请求单个的
+                let cnt1= {
+                        processId:this.$store.state.process.processInfo.id,
+                        userId:'222',
+                        count:500,
+                        offset:0
+                    }
+
+                this.$api.getProcessAssetList(cnt1,(res)=>{
+                    if(res.data.rc == this.$util.RC.SUCCESS){
+                        this.tableOverList = this.$util.tryParseJson(res.data.c)
+                    }else{
+                        this.tableOverList = []
+                    }
+                    console.log('------用户已经提交的资源- tableOverList---');
+                    console.log(this.tableOverList)
+
+                    for(let i =0;i<this.assetList.length;i++){
+                        for(let j=0;j< this.tableOverList.length;j++){
+                            if(this.assetList[i].id == this.tableOverList[j].descId){
+                                let  obj = this.assetList[i]
+                                obj.assetId =  this.tableOverList[j].id
+                                obj.tableDataId = this.tableOverList[j].src
+                                this.assetList[i] = obj
+                                break
+                            }
+                        }
+                    }
+                    this.loading = false
+                    console.log('-----editasset------')
+                    console.log(this.assetList)
+
+                })
             }
         },
+        computed:{
+            getNodeInfo(){
+                return this.nodeInfo
+            }
+        },
+        watch:{
+            getNodeInfo(val){
+                this.getNodeData()
+            }
+        },
+
         mounted(){
-            this.actions = JSON.parse(this.nodeInfo.actions)
-
-            console.log(this.assetList)
-            let descIds = []
-            for(let i=0;i<this.assetList.length;i++){
-                descIds.push(this.assetList[i].id)
-            }
-
-
-
-            /** 获取用户已经填写过的资源 列表  返回有误*/
-            let cnt1= {
-                processId:this.$store.state.process.processInfo.id,
-                userId:'222',
-                count:500,
-                offset:0
-            }
-            let tableOverList = []
-            this.$api.getProcessAssetByProcessId(cnt1,(res)=>{
-                if(res.data.rc == this.$util.RC.SUCCESS){
-                    tableOverList = this.$util.tryParseJson(res.data.c)
-                }else{
-                    tableOverList = []
-                }
-                console.log('------用户已经提交的资源----');
-                console.log(tableOverList)
-            })
-
+            this.getNodeData()
 
         }
 
