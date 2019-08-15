@@ -31,7 +31,10 @@
                                 <td>
                                     <!--<el-button type="primary" size="small">下载模板</el-button>-->
                                     <!--<el-button type="primary" size="small">上传文件</el-button>-->
-                                    <el-button type="primary" size="small" @click="writeModelShowBtn(item)"  v-if="item.assetId">重新编辑</el-button>
+
+                                    <el-button type="primary" size="small" @click="writeModelShowBtn(item)"  v-if="item.assetId && isShow">查看</el-button>
+
+                                    <el-button type="primary" size="small" @click="writeModelShowBtn(item)"  v-else-if="item.assetId">重新编辑</el-button>
                                     <el-button type="primary" size="small" @click="writeModelShowBtn(item)"  v-else>在线填写</el-button>
 
                                 </td>
@@ -39,7 +42,7 @@
                         </tbody>
                     </table>
                 </div>
-                <div class="action-btn">
+                <div class="action-btn" v-if="!isShow">
                     <span v-for="(item,index) in actions" :key="index">
                            <el-button type="primary"  @click="subBtn(item)"
                                       style="margin-left: 20px;margin-top: 20px">
@@ -52,7 +55,7 @@
         </div>
 
 
-        <el-dialog :title="table.alias" :visible.sync="tableModelShow">
+        <el-dialog :title="table.alias" :visible.sync="tableModelShow"  >
             <el-form>
                 <span v-for="(item,index) in tableHead" :key="index">
                     <span v-if="item.dataType == 'int' || item.dataType == 'decimal' ||  item.dataType == 'money'">
@@ -63,6 +66,7 @@
                                           type="number" autocomplete="off"
                                           :disabled="item.columnType=='compute'"
                                           @blur="getComputeVal()"
+                                          :readonly="isShow"
                                           :placeholder="item.columnType=='compute'?'根据公式自动计算完成的值':'请输入数字'"
                                             >
                                 </el-input>
@@ -72,7 +76,8 @@
                             <el-form-item :label="item.alias" label-width="100px"
                                           :rules="item.necessary=='0'?[{ required: true, message: '必填项不能为空'}]:''"
                                        >
-                                <el-input v-model="entryData[item.name]" type="text" autocomplete="off"    placeholder="请输入字符串数据" ></el-input>
+                                <el-input v-model="entryData[item.name]" type="text" autocomplete="off"
+                                          :readonly="isShow"  placeholder="请输入字符串数据" ></el-input>
                             </el-form-item>
                     </span>
                      <span v-if="item.dataType == 'time'">
@@ -83,6 +88,7 @@
                                          type="datetime"
                                          value-format="timestamp"
                                          style="width:100%"
+                                         :readonly="isShow"
                                          placeholder="选择日期时间">
                                 </el-date-picker>
                             </el-form-item>
@@ -94,6 +100,7 @@
                                            v-model="entryData[item.name]"
                                            type="date"
                                            style="width: 100%"
+                                           :readonly="isShow"
                                            value-format="timestamp"
                                            placeholder="选择日期">
                                    </el-date-picker>
@@ -102,7 +109,7 @@
                     <span v-if="item.dataType == 'bool'">
                              <el-form-item :label="item.alias" label-width="100px"
                                            :rules="item.necessary=='0'?[{ required: true, message: '必填项不能为空'}]:''">
-                                <el-radio-group v-model="entryData[item.name]">
+                                <el-radio-group v-model="entryData[item.name]"   :readonly="isShow">
                                     <el-radio :label="true">是</el-radio>
                                     <el-radio :label="false">否</el-radio>
                                 </el-radio-group>
@@ -114,8 +121,10 @@
             </el-form>
             <div slot="footer" class="dialog-footer">
                 <el-button @click="tableModelShow = false">取 消</el-button>
-                <el-button type="primary" @click="saveEditDataBtn" v-if="isEdit">保存修改</el-button>
+                <el-button type="primary" @click="tableModelShow = false" v-if="isEdit && isShow">确定</el-button>
+                <el-button type="primary" @click="saveEditDataBtn" v-else-if="isEdit">保存修改</el-button>
                 <el-button type="primary" @click="saveEntryDataBtn"  v-else>确 定</el-button>
+
             </div>
 
 
@@ -129,7 +138,16 @@
         props:{
             nodeInfo:Object,
             assetList:Array,
-            process:Object
+            process:Object,
+            processActivityId:Number,
+        },
+        watch:{
+            nodeInfo(){
+                this.getNodeData()
+            },
+            process(){
+                this.getNodeData()
+            },
         },
         data(){
             return{
@@ -139,6 +157,8 @@
                 tableHead:[],   //只有表单字段列表
                 entryData:{},   //输入数据绑定的表单对象
                 entryIds:{},
+
+                isShow:false,
 
                 //填写表单
                 isEdit:false,
@@ -152,13 +172,28 @@
         methods:{
             /** 提交当前action的所有操作 */
             subBtn(item){
-                let cnt = {
-                    processId: this.process.id, // Long 流程实例编号
-                    activityId: this.nodeInfo.id, // Long 流程节点编号
-                    actionId:item.id,
-                    userId:'2222',
-                }
-                this.executeProcessAction(cnt)
+
+                let _index = -1
+
+               for(let i=0;i<this.assetList.length;i++){
+                   if(this.assetList[i].necessary && !this.assetList[i].assetId){
+                       _index = i
+                       break
+                   }
+               }
+
+               if(_index == -1){
+                   let cnt = {
+                       processId: this.process.id, // Long 流程实例编号
+                       activityId: this.nodeInfo.id, // Long 流程节点编号
+                       actionId:item.id,
+                       userId:'2222',
+                   }
+                   this.executeProcessAction(cnt)
+               }else{
+                   this.$message.error('请先填写必填资料！')
+               }
+
             },
             //执行流程行为
             executeProcessAction(cnt){
@@ -168,6 +203,7 @@
                     }else{
                         this.$message.error('操作失败')
                     }
+                    console.log('2222222222222222')
                     this.$emit('changeActivity','0')
                 })
             },
@@ -243,6 +279,8 @@
                     }else{
                         this.$message.error('操作失败')
                     }
+                    console.log('--------tableModelShow----------')
+                    this.tableModelShow = false
                     this.$emit('changeActivity','0')
                 })
             },
@@ -264,6 +302,8 @@
                     }else{
                         this.$message.success('操作失败')
                     }
+                    console.log('-----tableModelShow----------')
+                    this.tableModelShow = false
                     this.$emit('changeActivity','0')
                 })
 
@@ -284,11 +324,12 @@
             getNodeData(){
                 this.actions = JSON.parse(this.nodeInfo.actions)
 
-                console.log('2222222')
-                console.log('-----actions--------');
-                console.log(this.actions)
-                console.log('----assetList---------')
-                console.log(this.assetList)
+
+                if(this.nodeInfo.id == this.processActivityId){
+                    this.isShow = false
+                }else{
+                    this.isShow = true
+                }
 
 
                 /** 获取用户已经填写过的资源 列表  返回有误*/
@@ -316,7 +357,7 @@
                                 let  obj = this.assetList[i]
                                 obj.assetId =  this.tableOverList[j].id
                                 obj.tableDataId = this.tableOverList[j].src
-                                this.assetList[i] = obj
+                                this.assetList.splice(i,1,obj)
                                 break
                             }
                         }
@@ -326,16 +367,6 @@
                     console.log(this.assetList)
 
                 })
-            }
-        },
-        computed:{
-            getNodeInfo(){
-                return this.nodeInfo
-            }
-        },
-        watch:{
-            getNodeInfo(val){
-                this.getNodeData()
             }
         },
 

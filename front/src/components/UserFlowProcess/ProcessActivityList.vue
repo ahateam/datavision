@@ -1,15 +1,12 @@
 <template>
     <div>
         <div class="list-box">
-            <div class="lsit-item-messsage" v-if="processActivityList.length == 0">暂无流程列表列表</div>
+            <div class="lsit-item-messsage" v-if="activityList.length == 0">暂无流程列表列表</div>
             <div class="list-item-box" v-else>
                 <div :class="activityId==item.id?' list-item list-item-active':'list-item '"
-                     v-for="(item,index) in processActivityList " :key="index">
-                        <span v-for="(item1,index1) in processLogList" :key="index1">
-                            <span class="sign-icon"  v-if="item1.id == item.id"><i class="iconfont icon-dian"></i> </span>
-                        </span>
-
-
+                     v-for="(item,index) in activityList " :key="index"
+                    @click="activeNodeBtn(item)">
+                            <span class="sign-icon"  v-if="item.userAction"><i class="iconfont icon-dian"></i> </span>
                     {{item.visual.label}}
                 </div>
             </div>
@@ -24,10 +21,58 @@
             processActivityList:Array,
             processLogList:Array,
             activityId:String,
+            processActivityId:Number,
+        },
+        data(){
+            return{
+                activityList:[]
+            }
+        },
+        watch:{
+            processActivityList(val){
+                this.activityList = JSON.parse(JSON.stringify(val))
+                this.initListAndLogList()
+            },
+            processLogList(){
+                if(this.processLogList.length){
+                    this.initListAndLogList()
+                }
+            },
+            activityId(){
+                this.initListAndLogList()
+            }
+
+
         },
         methods:{
+            initListAndLogList(){
+                for(let i=0;i<this.processLogList.length;i++){
+                    for(let j=0;j<this.activityList.length;j++){
+                            if(this.activityList[j].id == this.processLogList[i].activityId){
+                                let obj = {}
+                                 obj = this.activityList[j]
+                                obj.userAction = JSON.parse(JSON.stringify(this.processLogList[i]))
+                                this.activityList.splice(j,1,obj)
+                                break
+                            }
+                    }
+                }
+               console.log( this.activityList)
+            },
+            //选中某个节点
+            activeNodeBtn(item){
 
-        }
+                // this.activityId = item.id
+                if(item.userAction || item.id == this.processActivityId){
+                    console.log(item)
+                    this.$emit('changeActivity',item.id)
+                }
+
+
+
+
+            }
+        },
 
     }
 </script>

@@ -1,15 +1,17 @@
 <template>
     <div  v-loading="loading" >
-        <div class="header-box" v-if="!loading">
+        <div class="header-box" v-if="processData">
                 <div class="flow-title" >{{processData.process.title}}</div>
                 <div class="flow-content" >{{processData.process.remark}} </div>
         </div>
-        <div class="flow-activity-content" v-if="!loading">
+        <div class="flow-activity-content" v-if="processData">
             <div class="node-list">
                 <process-activity-list
                         :processActivityList="processActivityList"
                         :processLogList="processLogList"
-                        :activityId="activityId">
+                        :activityId="activityId"
+                        :processActivityId="processData.process.currActivityId"
+                        @changeActivity="getChildActivityId">
                 </process-activity-list>
             </div>
             <div class="page-next-box" >
@@ -17,6 +19,7 @@
                         :nodeInfo="nodeInfo"
                         :assetList="assetList"
                         :process="info"
+                        :processActivityId="processData.process.currActivityId"
                         @changeActivity="getChildActivityId">
                 </process-handle>
             </div>
@@ -52,13 +55,17 @@
             /** 子节点操作完成 求更新*/
             getChildActivityId(id){
                 if(id == '0'){
-                    this.getData()
+                    console.log('++/////////****--')
+                    this.getData(id)
+                }else{
+                    this.getData(id)
                 }
             },
 
-            getData(){
+            getData(id='0'){
                 this.loading = true
                 this.info = this.$store.state.process.processInfo
+
                 console.log(this.info)
 
                 let cnt={
@@ -71,7 +78,13 @@
                         console.log(this.processData)
 
                         this.getPDActivityList(this.processData.definition.id)
-                        this.getPDActivityById(this.processData.definition.id,this.processData.process.currActivityId)
+
+                        console.log(this.processData.process.currActivityId)
+                        if(id =='0'){
+                            this.getPDActivityById(this.processData.definition.id,this.processData.process.currActivityId)
+                        }else{
+                            this.getPDActivityById(this.processData.definition.id,id)
+                        }
 
                         this.loading = false
                     }else{
@@ -129,7 +142,6 @@
                     }else{
                         this.nodeInfo = {}
                     }
-
                 })
             },
 
@@ -146,6 +158,7 @@
                     }else{
                         this.processActivityList = []
                     }
+
                     console.log('------processActivityList-------')
                     console.log(this.processActivityList)
                 })
