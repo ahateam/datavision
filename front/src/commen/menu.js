@@ -25,6 +25,11 @@ const menuList = [
         path:'/userFlowList',
         icon:'icon-tianxie',
         title:'录入流程数据'
+    },
+    {
+        path:'/test',
+        icon:'icon-tianxie',
+        title:'后端测试'
     }
 ]
 export default  menuList
