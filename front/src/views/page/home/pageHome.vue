@@ -60,7 +60,14 @@
             },
         },
         created(){
-          this.$router.push('/processList')
+       
+            if(this.$route.name == 'pageHome'){
+                this.$router.push('/processList')
+            }else{
+
+                this.$router.push(''+this.$route.name)
+            }
+     
         },
         mounted() {
             this.menuList = menuList

@@ -12,9 +12,9 @@ const menuList = [
         title:'表格编辑器'
     },
     {
-        path:'/formDesign',
+        path:'/formList',
         icon:'icon-biaodan',
-        title:'表单编辑器'
+        title:'表单设计器'
     },
     {
         path:'/reportDesign',
@@ -26,6 +26,7 @@ const menuList = [
         icon:'icon-tianxie',
         title:'录入流程数据'
     },
+
     {
         path:'/test',
         icon:'icon-tianxie',
