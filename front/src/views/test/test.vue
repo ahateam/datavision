@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<el-button @click="getProcessInfo">开始流程</el-button>===>
+		<el-button @click="getProcessInfo" :disabled="get_dis">开始流程</el-button>===>
 		<el-button @click="processActionAccept">下一步</el-button>===>
 		<el-button @click="processActionAccept">提交审核</el-button>===>
 		<el-button @click="processActionAccept">审核通过</el-button>
@@ -14,16 +14,41 @@
 		<div>action类型 -------------- {{actionType}}</div>
 		<div>target跳转类型 ---------- {{targetType}}</div>
 		<div>target跳转位置 ---------- {{target}}</div>
-		<el-table :data="activityList">
-			<el-table-column prop="id" label="节点编号"></el-table-column>
-			<el-table-column prop="title" label="节点标题"></el-table-column>
-			<el-table-column label="操作">
-				<template slot-scope="scope">
-					<el-button @click="accept(scope.row.id,scope.row.title)">同意</el-button>
-					<el-button @click="reject(scope.row.id,scope.row.title)">驳回</el-button>
-				</template>
-			</el-table-column>
-		</el-table>
+		<div class="remark">{{remark}}</div>
+		<div style="margin: 20px;">
+			<div class="box">
+				<div class="title-list">
+					节点编号
+				</div>
+				<div class="title-list">
+					节点标题
+				</div>
+				<div class="title-list">
+					User
+				</div>
+				<div class="title-list" style="border: none;">
+					操作
+				</div>
+			</div>
+			<div class=" " v-for="(item,index) in activityList" :key="index">
+				<div class="box">
+					<div class="title-list">
+						{{item.id}}
+					</div>
+					<div class="title-list">
+						{{item.title}}
+					</div>
+					<div class="title-list">
+
+						{{JSON.parse(item.receivers)[0].label}}
+					</div>
+					<div class="title-list" style="border: none;">
+						<el-button @click="accept(index)" :disabled="item.a_ret">同意</el-button>
+						<el-button @click="reject(index)" :disabled="item.r_ret">驳回</el-button>
+					</div>
+				</div>
+			</div>
+		</div>
 	</div>
 </template>
 
@@ -44,16 +69,77 @@
 				target: '',
 				activityTitle: '',
 				activityId: '',
-				activityList: []
+				activityList: [],
+				receivers: '',
+				ext: 0,
+				remark: '',
+				get_dis: false,
+				action_by_activity: []
 			}
 		},
 		methods: {
-			accept(id, title) {
-				console.log(id + "======" + title);
+			accept(_index) {
+				let obj = JSON.parse(JSON.stringify(this.activityList[_index]));
+				obj.a_ret = true;
+				this.activityList.splice(_index, 1, obj);
+
+				let cnt1 = {
+					activityId: obj.id
+				}
+				this.$api.getProcessActionsInActivity(cnt1, (res) => {
+					console.log(res);
+					this.action_by_activity = JSON.parse(res.data.c);
+					this.editExt(obj.id, 'accept');
+					this.ifActivityAction();
+				})
+				
+				
 			},
-			reject(id, title) {
-				console.log(id + "======" + title);
+			reject(_index) {
+				let obj = JSON.parse(JSON.stringify(this.activityList[_index]));
+				obj.r_ret = true;
+				this.activityList.splice(_index, 1, obj);
+				let cnt1 = {
+					activityId: obj.id
+				}
+				this.$api.getProcessActionsInActivity(cnt1, (res) => {
+					console.log(res);
+					this.action_by_activity = JSON.parse(res.data.c);
+					this.editExt(obj.id, 'reject');
+				})
+				
 			},
+			
+			ifActivityAction(){
+				let cnt = {
+					activityGroupId:this.currActivityId
+				}
+				this.$api.ifActivityAction(cnt, (res) =>{
+					console.log(res.data.c);
+					let ext = Number(res.data.c);
+					if(ext == this.activityList.length){
+						console.log("成功");
+					}else{
+						console.log("失败");
+					}
+				})
+			},
+
+			editExt(activityId, actionType) {
+				for (let _index = 0; _index < this.action_by_activity.length; _index++) {
+					if (this.action_by_activity[_index].type === actionType) {
+						let cnt2 = {
+							actionId: this.action_by_activity[_index].id,
+							activityId: activityId,
+							ext: 1
+						}
+						this.$api.editActionExt(cnt2, (res) => {
+							console.log(res);
+						})
+					}
+				}
+			},
+
 			getProcessInfo() {
 				let cnt = {
 					id: '123',
@@ -62,7 +148,11 @@
 					targetType: this.targetType
 				}
 				this.$api.getProcessInfoByTargerType(cnt, (res) => {
-					console.log(res)
+					this.get_dis = true;
+					this.ext = 0;
+					this.aret = false;
+					this.rret = false;
+					console.log(res);
 					var processInfo = JSON.parse(res.data.c);
 					this.pdId = processInfo.definition.id;
 					this.startActivityId = processInfo.definition.startActivityId;
@@ -83,6 +173,13 @@
 					this.activityTitle = processInfo.activity[0].title;
 					this.activityId = processInfo.activity[0].id;
 					this.activityList = processInfo.activity;
+
+					this.activityList.forEach((item) => {
+						item.a_ret = false;
+						item.r_ret = false;
+					})
+
+
 				})
 			},
 			processActionAccept() {
@@ -100,10 +197,11 @@
 					if (res.data.c === '1' && res.data.rc === 'succ') {
 						this.getProcessInfo();
 					} else if (res.data.c === '2' && res.data.rc === 'succ') {
-						console.log("等待审核！！");
+						this.remark = '等待审核中！！！';
 						this.getProcessInfo();
 					}
 				})
+
 			}
 		},
 		onLoad: function() {
@@ -116,5 +214,32 @@
 	div {
 		font-size: 20px;
 		;
+	}
+
+	.title-list {
+		float: left;
+		width: 25%;
+		height: 50px;
+		border-right: 1px solid #aaa;
+		font-size: 16px;
+		color: 666;
+		text-align: center;
+		line-height: 50px;
+	}
+
+	.box {
+		width: auto;
+		height: 50px;
+		border: 1px solid #aaa;
+	}
+
+	.remark {
+		font-size: 25px;
+		font-weight: 700;
+		width: auto;
+		height: 60px;
+		text-align: center;
+		line-height: 60px;
+		color: #EE9900;
 	}
 </style>
