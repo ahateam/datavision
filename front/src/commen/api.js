@@ -8,40 +8,6 @@ import baseUrl from './url'
 let api = {};
 console.log('开始调用ctrl');
 
-api.ifActivityAction = function(cnt, callback){
-	util.call(baseUrl+'/process/ifActivityAction', cnt, callback)
-}
-//得到当前节点相关的action行为
-api.getProcessActionsInActivity = function(cnt, callback){
-	util.call(baseUrl+'/process/getProcessActionsInActivity', cnt, callback)
-}
-
-//修改当前节点操作行为状态（是否操作，以及操作行为是什么）
-api.editActionExt = function(cnt, callback){
-	util.call(baseUrl+'/process/editActionExt', cnt, callback)
-}
-
-//得到process相关信息
-api.getProcessInfoByTargerType=function(cnt,callback) {
-	util.call(baseUrl+'/process/getProcessInfoByTargerType', cnt, callback)
-}
-
-//重构后的action动作，acceptAction动作
-api.processActionAccept=function(cnt,callback) {
-	util.call(baseUrl+'/process/processActionAccept', cnt, callback)
-}
-
-//重构后的action动作，rejectAction动作
-api.processActionReject=function(cnt,callback) {
-	util.call(baseUrl+'/process/processActionReject', cnt, callback)
-}
-
-
-// /////////////////////////////////////////////////////
-// /////////////////////////////////////////////////////
-// /////////////////////////////////////////////////////
-// /////////////////////////////////////////////////////
-
 
 //获取流程图列表
 api.getPDList= function (cnt,callback) {

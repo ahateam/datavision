@@ -24,6 +24,9 @@ const formList =()=>import('./views/form/formList')
 /** 后端测试页面*/
 const test = () => import('./views/test/test')
 
+/** 后端测试创建流程定义页面*/
+const testCreatePD = () => import('./views/test/testCreatePD')
+
 
 
 Vue.use(Router)
@@ -103,6 +106,12 @@ export default new Router({
 					path: '/test',
 					name: 'test',
 					component: test
+				},
+			
+				{
+					path: '/testCreatePD',
+					name: 'testCreatePD',
+					component: testCreatePD
 				},
 
 			]

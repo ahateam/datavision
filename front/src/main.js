@@ -13,6 +13,7 @@ import util from 'ahaapi'
 import api from './commen/api'
 import commen from './commen/commen'
 import constData from './commen/constData'
+import testapi from './commen/test'
 
 
 
@@ -24,6 +25,7 @@ Vue.prototype.$util = util
 Vue.prototype.$commen = commen.commen
 Vue.prototype.$api = api
 Vue.prototype.$constData = constData.constData
+Vue.prototype.$testapi = testapi
 
 new Vue({
   router,

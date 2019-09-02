@@ -31,6 +31,12 @@ const menuList = [
         path:'/test',
         icon:'icon-tianxie',
         title:'后端测试'
+    },
+
+    {
+        path:'/testCreatePD',
+        icon:'icon-tianxie',
+        title:'后端测试创建流程定义'
     }
 ]
 export default  menuList
