@@ -19,18 +19,10 @@
 		<div class="row">
 			<div style="margin: 20px;">
 				<div class="box">
-					<div class="title-list">
-						节点编号
-					</div>
-					<div class="title-list">
-						节点标题
-					</div>
-					<div class="title-list">
-						所属节点分组
-					</div>
-					<div class="title-list">
-						操作
-					</div>
+					<div class="title-list">节点编号</div>
+					<div class="title-list">节点标题</div>
+					<div class="title-list">所属节点分组</div>
+					<div class="title-list">操作</div>
 				</div>
 				<div></div>
 				<div v-for="(item,index) in activityList" :key="index">
@@ -46,12 +38,17 @@
 						</div>
 						<div class="title-list">
 							<el-button @click="deletePDActivity(index)" :disabled="item.a_ret">删除当前节点</el-button>
-							<el-button @click="addAction(index)" :disabled="item.a_ret">添加action</el-button>
+							<el-button @click="addActivityAction" >添加action</el-button>
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
+
+
+
+
+
 
 		<br /><br /><br />
 		<div class="row line"></div>
@@ -77,18 +74,10 @@
 		<div class="row">
 			<div style="margin: 20px;">
 				<div class="box">
-					<div class="title-list">
-						节点编号
-					</div>
-					<div class="title-list">
-						节点标题
-					</div>
-					<div class="title-list">
-						所属节点分组
-					</div>
-					<div class="title-list">
-						操作
-					</div>
+					<div class="title-list">节点编号</div>
+					<div class="title-list">节点标题</div>
+					<div class="title-list">所属节点分组</div>
+					<div class="title-list">操作</div>
 				</div>
 				<div></div>
 				<div v-for="(sub_activity,index) in subActivityList" :key="index">
@@ -109,8 +98,7 @@
 				</div>
 			</div>
 		</div>
-
-
+		
 	</div>
 
 </template>
@@ -139,11 +127,12 @@
 					id: 400969407422093,
 					label: '常规节点'
 				},
-				activity:'',
+				activity: {},
 			}
 
 		},
 		methods: {
+
 			//创建流程定义
 			createPD() {
 				console.log("创建流程定义");
@@ -185,8 +174,8 @@
 				this.$testapi.createPDActivity(cnt, (res) => {
 					console.log(res);
 					this.activity = JSON.parse(res.data.c);
-					this.activityTitle='',
-					console.log(this.activity.id);
+					this.activityTitle = '',
+						console.log(this.activity.id);
 					this.getPDActivityList();
 				})
 			},
@@ -241,7 +230,7 @@
 				})
 			},
 			//创建流程节点到流程分组中
-			createSubActivity(){
+			createSubActivity() {
 				console.log("创建流程节点到流程分组中");
 				let cnt = {
 					pdId: this.pdId,
@@ -254,34 +243,35 @@
 					},
 					action: []
 				};
-				this.$testapi.createPDActivity(cnt,(res)=>{
+				this.$testapi.createPDActivity(cnt, (res) => {
 					this.activity = JSON.parse(res.data.c);
-					this.activityTitle='';
+					this.activityTitle = '';
+					console.log("activityId" + this.activity.id);
 					let cnt1 = {
-						activityGroupId:this.activityGroupId,
-						activityId:this.activity.id,
-						necessary:true
+						activityGroupId: this.activityGroupId,
+						activityId: this.activity.id,
+						necessary: true
 					}
-					this.$testapi.putActivityInGroup(cnt1,(res)=>{
+					this.$testapi.putActivityInGroup(cnt1, (res) => {
 						console.log(res);
 						this.getSubActivity();
 					})
 				})
 			},
 			//移除节点分组下属某一节点
-			removeSubActivity(_index){
+			removeSubActivity(_index) {
 				let obj = JSON.parse(JSON.stringify(this.subActivityList[_index]));
 				console.log("移除节点分组下属某一节点");
 				let cnt = {
-					activityGroupId:this.activityGroupId,
-					activityId:obj.id
+					activityGroupId: this.activityGroupId,
+					activityId: obj.id
 				}
-				this.$testapi.removeActivityInGroup(cnt,(res)=>{
+				this.$testapi.removeActivityInGroup(cnt, (res) => {
 					console.log(res);
 					this.getSubActivity();
 				})
 			},
-			
+
 			//获取流程节点分组下属所有节点
 			getSubActivity() {
 				console.log("获取流程分组下的流程节点");
@@ -294,53 +284,53 @@
 			}
 			//为节点或节点分组添加action
 			,
-			addActivityAction(_index){
+			addActivityAction(_index) {
 				let obj = JSON.parse(JSON.stringify(this.activityList[_index]));
 				let cnt = {
-					pdId:this.pdId,
-					ownerId:obj.id,
+					pdId: this.pdId,
+					ownerId: obj.id,
 					ownerType: 0,
-					type:'accept',
-					rules:[{
-						ext:'expDefault',
-						targetType:'activity',
-						target:''
+					type: 'accept',
+					rules: [{
+						ext: 'expDefault',
+						targetType: 'activity',
+						target: ''
 					}]
 				};
-				this.$testapi.addAction(cnt ,(res)=>{
+				this.$testapi.addAction(cnt, (res) => {
 					console.log(res);
 				})
 			},
-			addSubActivityAction(_index){
+			addSubActivityAction(_index) {
 				let obj = JSON.parse(JSON.stringify(this.subActivityList[_index]));
 				let cnt = {
-					pdId:this.pdId,
-					ownerId:obj.id,
+					pdId: this.pdId,
+					ownerId: obj.id,
 					ownerType: 0,
-					type:'accept',
-					rules:[{
-						ext:'expDefault',
-						targetType:'activity',
-						target:this.activityGroupId
+					type: 'accept',
+					rules: [{
+						ext: 'expDefault',
+						targetType: 'activity',
+						target: this.activityGroupId
 					}]
 				};
-				this.$testapi.addAction(cnt ,(res)=>{
+				this.$testapi.addAction(cnt, (res) => {
 					console.log(res);
 				})
 			},
-			addActivityGroupAction(){
+			addActivityGroupAction() {
 				let cnt = {
-					pdId:this.pdId,
-					ownerId:this.activityGroupId,
+					pdId: this.pdId,
+					ownerId: this.activityGroupId,
 					ownerType: 0,
-					type:'accept',
-					rules:[{
-						ext:'expDefault',
-						targetType:'activity',
-						target:''
+					type: 'accept',
+					rules: [{
+						ext: 'expDefault',
+						targetType: 'activity',
+						target: ''
 					}]
 				};
-				this.$testapi.addAction(cnt ,(res)=>{
+				this.$testapi.addAction(cnt, (res) => {
 					console.log(res);
 				})
 			},

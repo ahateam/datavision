@@ -23,9 +23,6 @@
 				<div class="title-list">
 					节点标题
 				</div>
-				<div class="title-list">
-					User
-				</div>
 				<div class="title-list" style="border: none;">
 					操作
 				</div>
@@ -37,10 +34,6 @@
 					</div>
 					<div class="title-list">
 						{{item.title}}
-					</div>
-					<div class="title-list">
-
-						{{JSON.parse(item.receivers)[0].label}}
 					</div>
 					<div class="title-list" style="border: none;">
 						<el-button @click="accept(index)" :disabled="item.a_ret">同意</el-button>
@@ -60,7 +53,7 @@
 				userId: 400987736416750,
 				pdId: '',
 				startActivityId: '',
-				processId: '',
+				processId: 401275010026419,
 				processTitle: '',
 				currActivityId: '',
 				actionType: '',
@@ -74,7 +67,8 @@
 				ext: 0,
 				remark: '',
 				get_dis: false,
-				action_by_activity: []
+				action_by_activity: [],
+				activityGroupId:''
 			}
 		},
 		methods: {
@@ -86,11 +80,22 @@
 				let cnt1 = {
 					activityId: obj.id
 				}
-				this.$api.getProcessActionsInActivity(cnt1, (res) => {
+				this.$testapi.getProcessActionsInActivity(cnt1, (res) => {
 					console.log(res);
 					this.action_by_activity = JSON.parse(res.data.c);
-					this.editExt(obj.id, 'accept');
-					this.ifActivityAction();
+					console.log("节点分组编号"+this.currActivityId);
+					let cnt ={
+						processId:this.processId,
+						activityId:obj.id,
+						actionId: this.action_by_activity[_index].id,
+						activityGroupId:this.currActivityId,
+						userId:this.userId,
+						type:'accept'
+					};
+					this.$testapi.testAction(cnt,(res)=>{
+						console.log(res);
+						this.getProcessInfo();
+					})
 				})
 				
 				
@@ -102,7 +107,7 @@
 				let cnt1 = {
 					activityId: obj.id
 				}
-				this.$api.getProcessActionsInActivity(cnt1, (res) => {
+				this.$testapi.getProcessActionsInActivity(cnt1, (res) => {
 					console.log(res);
 					this.action_by_activity = JSON.parse(res.data.c);
 					this.editExt(obj.id, 'reject');
@@ -114,7 +119,7 @@
 				let cnt = {
 					activityGroupId:this.currActivityId
 				}
-				this.$api.ifActivityAction(cnt, (res) =>{
+				this.$testapi.ifActivityAction(cnt, (res) =>{
 					console.log(res.data.c);
 					let ext = Number(res.data.c);
 					if(ext == this.activityList.length){
@@ -131,9 +136,9 @@
 						let cnt2 = {
 							actionId: this.action_by_activity[_index].id,
 							activityId: activityId,
-							ext: 1
+							ext: 1	
 						}
-						this.$api.editActionExt(cnt2, (res) => {
+						this.$testapi.editActionExt(cnt2, (res) => {
 							console.log(res);
 						})
 					}
@@ -144,10 +149,10 @@
 				let cnt = {
 					id: '123',
 					userId: this.userId,
-					processId: 401141089162204,
+					processId: this.processId,
 					targetType: this.targetType
 				}
-				this.$api.getProcessInfoByTargerType(cnt, (res) => {
+				this.$testapi.getProcessInfoByTargerType(cnt, (res) => {
 					this.get_dis = true;
 					this.ext = 0;
 					this.aret = false;
@@ -178,21 +183,19 @@
 						item.a_ret = false;
 						item.r_ret = false;
 					})
-
-
 				})
 			},
 			processActionAccept() {
 				let cnt = {
 					id: '123',
-					processId: 401141089162204,
+					processId: this.processId,
 					activityId: this.currActivityId,
 					actionId: this.actionId,
 					actionType: this.actionType,
 					targetType: this.targetType,
 					userId: this.userId,
 				}
-				this.$api.processActionAccept(cnt, (res) => {
+				this.$testapi.processActionAccept(cnt, (res) => {
 					console.log(res);
 					if (res.data.c === '1' && res.data.rc === 'succ') {
 						this.getProcessInfo();
