@@ -75,10 +75,24 @@
 			accept(_index) {
 				let obj = JSON.parse(JSON.stringify(this.activityList[_index]));
 				obj.a_ret = true;
-				this.activityList.splice(_index, 1, obj);
-
-				let cnt1 = {
-					activityId: obj.id
+				// 				this.activityList.splice(_index, 1, obj);
+				// 
+				// 				let cnt1 = {
+				// 					activityId: obj.id
+				// 				}
+				// 				this.$testapi.getProcessActionsInActivity(cnt1, (res) => {
+				// 					console.log(res);
+				// 					this.action_by_activity = JSON.parse(res.data.c);
+				// 					this.editExt(obj.id, 'accept');
+				// 					this.ifActivityAction();
+				// 				})
+				let cnt = {
+					processId: this.processId,
+					activityId: obj.id,
+					actionId: this.actionId,
+					activityGroupId: this.currActivityId,
+					userId: this.userId,
+					type:'accept'
 				}
 				this.$testapi.getProcessActionsInActivity(cnt1, (res) => {
 					console.log(res);
@@ -97,8 +111,7 @@
 						this.getProcessInfo();
 					})
 				})
-				
-				
+
 			},
 			reject(_index) {
 				let obj = JSON.parse(JSON.stringify(this.activityList[_index]));
@@ -112,19 +125,19 @@
 					this.action_by_activity = JSON.parse(res.data.c);
 					this.editExt(obj.id, 'reject');
 				})
-				
+
 			},
-			
-			ifActivityAction(){
+
+			ifActivityAction() {
 				let cnt = {
-					activityGroupId:this.currActivityId
+					activityGroupId: this.currActivityId
 				}
 				this.$testapi.ifActivityAction(cnt, (res) =>{
 					console.log(res.data.c);
 					let ext = Number(res.data.c);
-					if(ext == this.activityList.length){
+					if (ext == this.activityList.length) {
 						console.log("成功");
-					}else{
+					} else {
 						console.log("失败");
 					}
 				})
