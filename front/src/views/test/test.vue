@@ -42,6 +42,16 @@
 				</div>
 			</div>
 		</div>
+		<div style="width: 100% ;height:300px;margin: 20px; background-color: ;">
+			姓名：
+			<el-input class="col_input" v-model="colName" placeholder="姓名"></el-input>
+			<span style="margin-left: 100px;">
+				性别：
+				<el-radio v-model="sex" label="男" >男</el-radio>
+				<el-radio v-model="sex" label="女" >女</el-radio>
+			</span>
+			<el-button @click="exportData">導入</el-button>
+		</div>
 	</div>
 </template>
 
@@ -50,6 +60,8 @@
 		name: 'test',
 		data() {
 			return {
+				sex:"男",
+				asset: [],
 				userId: 400987736416750,
 				pdId: '',
 				startActivityId: '',
@@ -68,45 +80,48 @@
 				remark: '',
 				get_dis: false,
 				action_by_activity: [],
-				activityGroupId:''
+				activityGroupId: ''
 			}
 		},
 		methods: {
+			exportData(){
+				let cnt={
+					fileUrl : "C:\\Users\\Admin\\Desktop\\123456.xlsx",
+					importTaskId : 401784026919259,
+					tableSchemaId : 401655491082651,
+					userId : 10010,
+					batchId : 401769446115940,
+					batchVer : "ce_1_1"
+				};
+				this.$testapi.exportData(cnt, (res) => {
+					console.log(res.data.c);
+					
+					})
+			},
 			accept(_index) {
 				let obj = JSON.parse(JSON.stringify(this.activityList[_index]));
 				obj.a_ret = true;
-				// 				this.activityList.splice(_index, 1, obj);
-				// 
-				// 				let cnt1 = {
-				// 					activityId: obj.id
-				// 				}
-				// 				this.$testapi.getProcessActionsInActivity(cnt1, (res) => {
-				// 					console.log(res);
-				// 					this.action_by_activity = JSON.parse(res.data.c);
-				// 					this.editExt(obj.id, 'accept');
-				// 					this.ifActivityAction();
-				// 				})
-				let cnt = {
+				let cnt1 = {
 					processId: this.processId,
 					activityId: obj.id,
 					actionId: this.actionId,
 					activityGroupId: this.currActivityId,
 					userId: this.userId,
-					type:'accept'
+					type: 'accept'
 				}
 				this.$testapi.getProcessActionsInActivity(cnt1, (res) => {
 					console.log(res);
 					this.action_by_activity = JSON.parse(res.data.c);
-					console.log("节点分组编号"+this.currActivityId);
-					let cnt ={
-						processId:this.processId,
-						activityId:obj.id,
+					console.log("节点分组编号" + this.currActivityId);
+					let cnt = {
+						processId: this.processId,
+						activityId: obj.id,
 						actionId: this.action_by_activity[_index].id,
-						activityGroupId:this.currActivityId,
-						userId:this.userId,
-						type:'accept'
+						activityGroupId: this.currActivityId,
+						userId: this.userId,
+						type: 'accept'
 					};
-					this.$testapi.testAction(cnt,(res)=>{
+					this.$testapi.testAction(cnt, (res) => {
 						console.log(res);
 						this.getProcessInfo();
 					})
@@ -132,7 +147,7 @@
 				let cnt = {
 					activityGroupId: this.currActivityId
 				}
-				this.$testapi.ifActivityAction(cnt, (res) =>{
+				this.$testapi.ifActivityAction(cnt, (res) => {
 					console.log(res.data.c);
 					let ext = Number(res.data.c);
 					if (ext == this.activityList.length) {
@@ -149,7 +164,7 @@
 						let cnt2 = {
 							actionId: this.action_by_activity[_index].id,
 							activityId: activityId,
-							ext: 1	
+							ext: 1
 						}
 						this.$testapi.editActionExt(cnt2, (res) => {
 							console.log(res);
@@ -257,5 +272,11 @@
 		text-align: center;
 		line-height: 60px;
 		color: #EE9900;
+	}
+
+	.col_input {
+		width: 200px;
+		height: 30px;
+		background-color: #666666;
 	}
 </style>

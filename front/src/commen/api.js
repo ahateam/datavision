@@ -139,7 +139,7 @@ api.delProcess = function (cnt,callback) {
 
 //获取流程事务的详细信息
 api.getProcessInfo = function (cnt,callback) {
-    util.call(baseUrl+'/process/getProcessInfo', cnt, callback)
+    util.call(baseUrl+'/process/getProcessInfoByTargerType', cnt, callback)
 }
 //获取流程下所有节点的操作日志
 api.getProcessLogList = function (cnt,callback) {
@@ -147,7 +147,8 @@ api.getProcessLogList = function (cnt,callback) {
 }
 //执行流程行为
 api.executeProcessAction = function (cnt,callback) {
-    util.call(baseUrl+'/process/executeProcessAction', cnt, callback)
+    // util.call(baseUrl+'/process/executeProcessAction', cnt, callback)
+	util.call(baseUrl+'/process/testAction', cnt, callback)
 }
 
 /** 表格操作相关*/

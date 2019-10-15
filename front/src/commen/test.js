@@ -6,6 +6,35 @@ import baseUrl from './url'
 
 let test = {};
 
+
+
+//表格引擎测试
+
+
+test.exportData = function (cnt,callback){
+	util.call(baseUrl+'/import/importTableBatchData', cnt, callback)
+}
+
+
+
+test.getDatabaseList = function(cnt,callback){
+	util.call(baseUrl+'/table/getDatabaseList', cnt, callback)
+}
+
+test.getTableNameList = function(cnt,callback){
+	util.call(baseUrl+'/table/getTableNameList', cnt, callback)
+}
+test.getTableColumns = function(cnt,callback){
+	util.call(baseUrl+'/table/getTableColumns', cnt, callback)
+}
+
+
+
+
+
+
+
+
 //测试创建流程定义
 test.createPD = function (cnt,callback){
 	util.call(baseUrl+'/flow/createPD', cnt, callback)
@@ -65,7 +94,7 @@ test.addAction = function(cnt, callback){
 console.log('开始调用ctrl');
 
 test.testAction = function (cnt,callback){
-	util.call(baseUrl+'/process/testAction', cnt, callback)
+	util.call(baseUrl+'/process/execAction', cnt, callback)
 }
 
 
