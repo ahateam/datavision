@@ -26,6 +26,7 @@ const test = () => import('./views/test/test')
 
 /** 后端测试创建流程定义页面*/
 const testCreatePD = () => import('./views/test/testCreatePD')
+const new_file = () => import('./views/test/new_file')
 
 
 
@@ -112,6 +113,11 @@ export default new Router({
 					path: '/testCreatePD',
 					name: 'testCreatePD',
 					component: testCreatePD
+				},
+				{
+					path: '/new_file',
+					name: 'new_file',
+					component: new_file
 				},
 
 			]

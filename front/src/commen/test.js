@@ -6,10 +6,14 @@ import baseUrl from './url'
 
 let test = {};
 
-
+test.uploadtest = function (cnt,callback){
+	util.call(baseUrl+'/flow/uploadtest', cnt, callback)
+}
 
 //表格引擎测试
-
+test.getORGUserInfo = function (cnt,callback){
+	util.call(baseUrl+'/org/getORGUserInfo', cnt, callback)
+}
 
 test.exportData = function (cnt,callback){
 	util.call(baseUrl+'/import/importTableBatchData', cnt, callback)

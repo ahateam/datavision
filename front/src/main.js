@@ -14,7 +14,7 @@ import api from './commen/api'
 import commen from './commen/commen'
 import constData from './commen/constData'
 import testapi from './commen/test'
-
+import axios from 'axios'
 
 
 Vue.use(ElementUI)
@@ -24,6 +24,7 @@ Vue.config.productionTip = false
 Vue.prototype.$util = util
 Vue.prototype.$commen = commen.commen
 Vue.prototype.$api = api
+Vue.prototype.$axios = axios
 Vue.prototype.$constData = constData.constData
 Vue.prototype.$testapi = testapi
 

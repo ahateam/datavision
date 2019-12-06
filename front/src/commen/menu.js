@@ -42,6 +42,11 @@ const menuList = [
         path:'/tableTest',
         icon:'icon-tianxie',
         title:'table'
+    },
+    {
+        path:'/new_file',
+        icon:'icon-tianxie',
+        title:'GETAPI'
     }
 ]
 export default  menuList
